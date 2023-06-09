@@ -1,0 +1,22 @@
+{% if user.is_authenticated %}
+    <script>
+        let localDate = new Date();
+        $(document).ready(function(){
+            $.ajax({
+                url: '{% url 'change_utc_offset' %}',
+                data: {
+                    'utc_offset': localDate.getTimezoneOffset(),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                type: 'POST',
+
+                success: function () {
+                    //
+                },
+                error: function () {
+                    //
+                }
+            })
+        });
+    </script>
+{% endif %}

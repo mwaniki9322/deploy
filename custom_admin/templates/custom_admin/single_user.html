@@ -1,0 +1,1194 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}{{ user.get_greeting_name }} - Users - Admin{% endblock %}
+{% block css %}
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md">
+                    <h4 class="quicksand-font fw-700 fs-22">{{ user.get_greeting_name }}</h4>
+                </div>
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'index' %}" class="a-no-dec text-primary">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'custom_admin' %}" class="a-no-dec text-primary">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'admin_users' %}" class="a-no-dec text-primary">
+                                    Users
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ user.username|truncatechars:10 }}</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="row my-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-credit">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="wallet-bal-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                            aria-expanded="false" style="visibility: hidden">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="wallet-bal-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#withdraw-modal">
+                                                    Withdraw
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-credit-card icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 main_bal">
+                                        Ksh. {{ user.wallet_bal }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Wallet balance
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-total-sent">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="earnings-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="earnings-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#earnings-summary-modal">
+                                                    Summary
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#earnings-view-modal">
+                                                    View earnings
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-money-check-alt icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 total_income">
+                                        Ksh. {{ user.total_income }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Earnings
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-contacts">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="delivery-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="delivery-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#"
+                                                    data-bs-toggle="modal" data-bs-target="#withdrawals-view-modal">
+                                                    View withdrawals
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-sign-out icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 total_withdrawals">
+                                        Ksh. {{ user.total_withdrawals }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Withdrawals
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-sender-ids">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="sender-ids-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="sender-ids-dropdown-menu-btn">
+                                            {% if user.is_activated %}
+                                                <li>
+                                                    <a class="dropdown-item fs-14" href="{% url 'admin_user_referrals' user.pk %}">
+                                                        View referrals
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item fs-14 clipboard-copy" href="#"
+                                                        data-content="http://{{ request.get_host }}{% url 'signup' %}?rc={{ user.id_2 }}">
+                                                        Copy referral link
+                                                    </a>
+                                                </li>
+                                                {% else %}
+                                                <li>
+                                                    <a class="dropdown-item fs-14" href="{% url 'activate_account' %}">
+                                                        Activate account
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-users icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700">
+                                        {{ user.total_referrals }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Referrals
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-4">
+                <div class="col-lg-6">
+                    <div class="card custom1">
+                        <div class="card-header pb-0" style="border-bottom: none">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5>Earnings Trend</h5>
+                                <a href="#" class="fs-14 a-no-dec text-primary fw-600"
+                                    style="font-family: 'Quicksand', sans-serif" id="income-trend-dates">
+                                    --
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div style="max-width: 100%; min-width: 100%">
+                                <div id="income-trend-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card custom1" style="height: 21.1rem">
+                        <div class="card-header" style="border-bottom: none">
+                            <h5>Income Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div style="max-width: 100%;" class="center-xy">
+                                <div id="income-summary-pie-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="card custom3 mb-20">
+                        <div class="card-body">
+                            <div class="top-block d-flex justify-content-between align-items-center">
+                                <i class="ik ik-loader"></i>
+                                <a href="#" class="text-white">
+                                    <i class="ik ik-more-horizontal"></i>
+                                </a>
+                            </div>
+                            <h5 class="fw-700 fs-18 daily_income">
+                                Ksh. {{ user.daily_income }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Avg. daily income
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card custom3 mb-20">
+                        <div class="card-body">
+                            <div class="top-block d-flex justify-content-between align-items-center">
+                                <i class="fa fa-calendar-week"></i>
+                                <a href="#" class="text-white">
+                                    <i class="ik ik-more-horizontal"></i>
+                                </a>
+                            </div>
+                            <h5 class="fw-700 fs-18 this_month_income">
+                                Ksh. {{ user.get_this_month_income }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Earned in {% now 'M' %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-lg-grid text-center">
+                        <a href="#" class="btn btn-primary btn-sm custom" data-bs-toggle="modal"
+                           data-bs-target="#earnings-view-modal">
+                            View Earnings
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h4 class="fw-700 fs-16 mb-3">Referrals</h4>
+                <div class="row">
+                    {% for referral in referrals %}
+                        <div class="col-lg-3 col-md-6">
+                            <div class="user text-center" style="box-shadow: none">
+                                <img src="{{ referral.get_pic }}" class="user-profile-pic" alt="">
+                                <h5 class="name">
+                                    {{ referral.get_full_name|truncatechars:20 }}
+                                    {% if referral.is_activated %}
+                                        - <i class="fa fa-check-circle is-activated" data-tippy-placement="top" title="Activated"></i>
+                                    {% endif %}
+                                </h5>
+                                <p class="membership to_local_datetime" data-utc="{{ referral.date_joined|date:'Y-m-d H:i' }}"></p>
+                                <div class="stats">
+                                    <div class="row">
+                                        <div class="col-auto mx-auto text-center">
+                                            <h5>{{ referral.total_referrals }}</h5>
+                                            <p>
+                                                Referrals
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{% url 'admin_single_user' referral.pk %}" class="btn btn-primary custom btn-sm fs-12">
+                                    View profile
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center">
+                            <i class="fa fa-users" style="font-size: 50px; color: #9e9c9c"></i>
+                            <p class="fs-14 my-2">
+                                Referrals will appear here.
+                            </p>
+                            {% if user.is_activated %}
+                                <button class="btn btn-primary btn-sm custom clipboard-copy"
+                                    data-content="http://{{ request.get_host }}{% url 'signup' %}?rc={{ user.id_2 }}">
+                                    Copy Referral Link
+                                </button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if referrals %}
+                    <div class="text-center">
+                        <a href="{% url 'admin_user_referrals' user.pk %}" class="btn btn-primary btn-sm custom">
+                            All referrals
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block modals %}
+    <!-- Earnings summary modal -->
+    <div class="modal fade" id="earnings-summary-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Earnings summary
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <div class="bulk-sms-summary-block mb-3">
+                            <h5 class="fw-700 fs-14">Referral bonuses</h5>
+                            <div class="d-flex justify-content-between">
+                                <p class="my-0 fs-12">
+                                    Earned - Ksh. {{ user.referral_income.amount }}
+                                </p>
+                                <p class="my-0 fs-12 text-primary">
+                                    {{ user.referral_income.percentage }}%
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bulk-sms-summary-block mb-3">
+                            <h5 class="fw-700 fs-14">Tasks</h5>
+                            <div class="d-flex justify-content-between">
+                                <p class="my-0 fs-12">
+                                    Earned - Ksh. {{ user.tasks_income.amount }}
+                                </p>
+                                <p class="my-0 fs-12 text-primary">
+                                    {{ user.tasks_income.percentage }}%
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bulk-sms-summary-block mb-3">
+                            <h5 class="fw-700 fs-14">SpinWin</h5>
+                            <div class="d-flex justify-content-between">
+                                <p class="my-0 fs-12">
+                                    Earned - Ksh. {{ user.spinwin_income.amount }}
+                                </p>
+                                <p class="my-0 fs-12 text-primary">
+                                    {{ user.spinwin_income.percentage }}%
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bulk-sms-summary-block">
+                            <h5 class="fw-700 fs-14">Awards</h5>
+                            <div class="d-flex justify-content-between">
+                                <p class="my-0 fs-12">
+                                    Earned - Ksh. {{ user.awards_income.amount }}
+                                </p>
+                                <p class="my-0 fs-12 text-primary">
+                                    {{ user.awards_income.percentage }}%
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Earnings view modal -->
+    <div class="modal fade" id="earnings-view-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Earnings
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3" id="earnings-view-wrapper">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Withdrawals view modal -->
+    <div class="modal fade" id="withdrawals-view-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Withdrawals
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3" id="withdrawals-view-wrapper">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Change password modal -->
+    <div class="modal fade" id="change-password-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Change password
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <form id="change-password-form">
+                            <ul class="form-errors text-danger fs-14" data-label="__all__"
+                                style="display: none"></ul>
+                            <div class="mb-3">
+                                <label for="change-password1" class="mb-1 fs-14 fw-600">
+                                    New password
+                                </label>
+                                <input type="password" class="form-control fs-14" id="change-password1"
+                                    required maxlength="254">
+                                <ul class="form-errors text-danger fs-14 mt-1" data-label="new_password1"
+                                    style="display: none"></ul>
+                            </div>
+                            <div class="mb-3">
+                                <label for="change-password2" class="mb-1 fs-14 fw-600">
+                                    Confirm password
+                                </label>
+                                <input type="password" class="form-control fs-14" id="change-password2"
+                                    required maxlength="254">
+                                <ul class="form-errors text-danger fs-14 mt-1" data-label="new_password2"
+                                    style="display: none"></ul>
+                            </div>
+                            <button class="btn btn-primary btn-sm custom" type="submit">
+                                Change password
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Delete modal -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-danger">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Delete account
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <form method="post" action="{% url 'admin_delete_user' user.pk %}">
+                            {% csrf_token %}
+                            <p class="my-2 fs-14">
+                                Are you sure you want to delete the user account for {{ user.username }}?
+                            </p>
+                            <button class="btn btn-danger btn-sm" type="submit">
+                                Sure, delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Freezing modal -->
+    <div class="modal fade" id="freezing-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    {% if user.is_active %}
+                                        Freeze account
+                                        {% else %}
+                                        Unfreeze account
+                                    {% endif %}
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <form method="post" action="{% url 'admin_user_freezing' user.pk %}">
+                            {% csrf_token %}
+                            <p class="my-2 fs-14">
+                                {% if user.is_active %}
+                                    This will freeze {{ user.username }}'s account.
+                                    {% else %}
+                                    This will unfreeze {{ user.username }}'s account.
+                                {% endif %}
+                            </p>
+                            <button class="btn btn-primary btn-sm custom" type="submit">
+                                {% if user.is_active %}
+                                    Freeze
+                                    {% else %}
+                                    Unfreeze
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Activation modal -->
+    <div class="modal fade" id="activation-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    {% if user.is_activated %}
+                                        Deactivate
+                                        {% else %}
+                                        Activate
+                                    {% endif %}
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <form method="post" action="{% url 'admin_user_activation' user.pk %}">
+                            {% csrf_token %}
+                            <p class="mt-0 mb-2 fs-14">
+                                {% if user.is_activated %}
+                                    This will deactivate the user account for {{ user.username }}.
+                                    {% else %}
+                                    This will activate {{ user.username }} and award
+                                    referral bonuses.
+                                {% endif %}
+                            </p>
+                            <button class="btn btn-primary btn-sm custom" type="submit">
+                                {% if user.is_activated %}
+                                    Deactivate
+                                    {% else %}
+                                    Activate
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Award cash modal -->
+    <div class="modal fade" id="award-cash-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Award cash
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <form id="award-cash-form">
+                            <ul class="form-errors text-danger fs-14" style="display: none" data-label="__all__">
+
+                            </ul>
+                            <div class="mb-3">
+                                <label for="award-cash-amount" class="mb-1 fs-14 fw-600">
+                                    Amount in KES
+                                </label>
+                                <input type="number" class="form-control fs-14" id="award-cash-amount"
+                                    required min="1">
+                                <ul class="form-errors text-danger fs-14" style="display: none" data-label="amount">
+
+                                </ul>
+                            </div>
+                            <button class="btn btn-primary btn-sm custom" type="submit">
+                                Award cash
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Spinwin top up modal -->
+    <div class="modal fade" id="spinwin-top-up-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Spinwin top up
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <form id="spinwin-top-up-form">
+                            <ul class="form-errors text-danger fs-14" style="display: none" data-label="__all__">
+
+                            </ul>
+                            <div class="mb-3">
+                                <label for="spinwin-top-up-amount" class="mb-1 fs-14 fw-600">
+                                    Amount in KES
+                                </label>
+                                <input type="number" class="form-control fs-14" id="spinwin-top-up-amount"
+                                    required min="1">
+                                <ul class="form-errors text-danger fs-14" style="display: none" data-label="amount">
+
+                                </ul>
+                            </div>
+                            <button class="btn btn-primary btn-sm custom" type="submit">
+                                Top up
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Tasks subscribing modal -->
+    <div class="modal fade" id="tasks-subscribing-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                   {% if user.tasks_package %}
+                                      Unsubscribe from tasks
+                                      {% else %}
+                                      Subscribe to tasks
+                                  {% endif %}
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <form method="post" action="{% url 'admin_tasks_user_subscribing' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="user" value="{{ user.pk }}">
+                            <div class="mb-3">
+                                <label for="tasks-subscribing-package" class="mb-1 fs-14 fw-600">
+                                    Package
+                                </label>
+                                <select id="tasks-subscribing-package" name="package" required class="form-select fs-14 my-1"
+                                    {% if user.tasks_package %}disabled{% endif %}>
+                                    {% for package in tasks_packages %}
+                                        <option value="{{ package.code }}" {% if user.tasks_package == package.code %}selected{% endif %}>{{ package.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button class="btn btn-primary btn-sm custom" type="submit">
+                                {% if user.tasks_package %}
+                                      Unsubscribe
+                                      {% else %}
+                                      Subscribe
+                                  {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block bottom-content %}
+    <!-- Wrapper / End -->
+    <div id="fixed-bottom-overlay">
+        <div class="dropdown">
+            <div class="icon-center-wrap wrap4 mb-2" id="more-dropdown"
+                 data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="ik ik-chevron-up icon"></i>
+            </div>
+          <ul class="dropdown-menu" aria-labelledby="more-dropdown">
+
+              <li>
+                  <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                     data-bs-target="#award-cash-modal">Award cash</a>
+              </li>
+            <li>
+                  <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                     data-bs-target="#tasks-subscribing-modal">
+                      {% if user.tasks_package %}
+                          Unsubscribe from tasks
+                          {% else %}
+                          Subscribe to tasks
+                      {% endif %}
+                  </a>
+              </li>
+                <li>
+                  <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                     data-bs-target="#spinwin-top-up-modal">Spinwin top up</a>
+              </li>
+              <li>
+                  <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                     data-bs-target="#activation-modal">
+                      {% if user.is_activated %}
+                        Deactivate
+                          {% else %}
+                          Activate
+                      {% endif %}
+                  </a>
+              </li>
+            <li>
+                  <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                     data-bs-target="#change-password-modal">Change password</a>
+              </li>
+            <li>
+                  <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                     data-bs-target="#freezing-modal">
+                      {% if user.is_active %}
+                        Freeze account
+                          {% else %}
+                          Unfreeze account
+                      {% endif %}
+                  </a>
+              </li>
+            <li><a class="dropdown-item fs-14" href="#"
+                data-bs-toggle="modal"
+                     data-bs-target="#delete-modal">Delete account</a></li>
+          </ul>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        // View earnings
+        let earningsViewModalElem = document.getElementById('earnings-view-modal');
+        let earningsViewWrapper = $('#earnings-view-wrapper');
+        earningsViewModalElem.addEventListener('show.bs.modal', function (event) {
+            loadEarnings('{% url 'admin_user_earnings' user.pk %}?page=1');
+        })
+
+        earningsViewWrapper.on('click', function (event) {
+            event.preventDefault();
+            let target = event.target;
+            if (target.tagName === 'I') {
+                target = target.parentElement;
+            }
+            if ($(target).hasClass('go-page')) {
+                let url = `{% url 'admin_user_earnings' user.pk %}?page=${$(target).data('page')}`;
+                loadEarnings(url);
+            }
+        })
+
+        function loadEarnings(url) {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (data) {
+                    earningsViewWrapper.html(data);
+                    earningsViewWrapper.find('.to_local_datetime').each(function(i, obj) {
+                        let utc_datetime = moment.utc($(this).data('utc'));
+                        let local_datetime = moment(utc_datetime).local();
+                        local_datetime = local_datetime.format("MMM. DD, YYYY, hh:mm a");
+                        $(this).text(local_datetime);
+                    });
+                },
+                error: function () {
+                    toastr.error('Unable to load earnings. Please reload this page.', 'Error!');
+                }
+            })
+        }
+
+        // View withdrawals
+        let withdrawalsViewModalElem = document.getElementById('withdrawals-view-modal');
+        let withdrawalsViewWrapper = $('#withdrawals-view-wrapper');
+        withdrawalsViewModalElem.addEventListener('show.bs.modal', function (event) {
+            loadWithdrawals('{% url 'admin_user_withdrawals' user.pk %}?page=1');
+        })
+
+        withdrawalsViewWrapper.on('click', function (event) {
+            event.preventDefault();
+            let target = event.target;
+            if (target.tagName === 'I') {
+                target = target.parentElement;
+            }
+            if ($(target).hasClass('go-page')) {
+                let url = `{% url 'admin_user_withdrawals' user.pk %}?page=${$(target).data('page')}`;
+                loadWithdrawals(url);
+            }
+        })
+
+        function loadWithdrawals(url) {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (data) {
+                    withdrawalsViewWrapper.html(data);
+                    withdrawalsViewWrapper.find('.to_local_datetime').each(function(i, obj) {
+                        let utc_datetime = moment.utc($(this).data('utc'));
+                        let local_datetime = moment(utc_datetime).local();
+                        local_datetime = local_datetime.format("MMM. DD, YYYY, hh:mm a");
+                        $(this).text(local_datetime);
+                    });
+                },
+                error: function () {
+                    toastr.error('Unable to load withdrawals. Please reload this page.', 'Error!');
+                }
+            })
+        }
+
+        // Income trend chart
+        let incomeTrendChartData = {{ income_trend_chart_data }};
+        let incomeTrendChartOptions = {
+            chart: {
+                height: 253,
+                type: "line",
+                toolbar: {
+                    show: true,
+                },
+            },
+            series: incomeTrendChartData['series'],
+            stroke: {
+                width: [0, 4],
+                curve: 'smooth'
+            },
+            labels: incomeTrendChartData['labels'],
+            xaxis: {
+                type: "category",
+                lines: {
+                    show: false,
+                },
+                axisBorder: {
+                    show: false,
+                },
+            },
+            yaxis: {
+                title: {
+                    text: "Earnings"
+                },
+            },
+            grid: {
+                borderColor: '#d8d8d8',
+                strokeDashArray: 5,
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return 'Ksh. ' + value;
+                    }
+                }
+            }
+        };
+        let incomeTrendChart = new ApexCharts(
+            document.getElementById('income-trend-chart'), incomeTrendChartOptions
+        );
+        incomeTrendChart.render();
+        $('#income-trend-dates').text(incomeTrendChartData['labels'][0] + ' - ' + incomeTrendChartData['labels'][6]);
+
+        // Income summary pie chart
+        let incomeSummaryPieChartOptions = {
+            chart: {
+                type: "donut",
+                toolbar: {
+                    show: true,
+                },
+            },
+            series: [
+                {{ user.referral_income.amount }},
+                {{ user.tasks_income.amount }},
+                {{ user.spinwin_income.amount }},
+                {{ user.awards_income.amount }},
+            ],
+            labels: ['Referrals', 'Tasks', 'SpinWin', 'Awards'],
+            legend: {
+                position: 'bottom'
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '65%',
+                        labels: {
+                            show: true,
+                            name: {
+                                show: true,
+                                fontSize: '14px',
+                                fontFamily: 'Nunito, sans-serif',
+                                fontWeight: 700,
+                                color: '#02024f',
+                                offsetY: 0,
+                                formatter: function (val) {
+                                    return val
+                                }
+                            },
+                            value: {
+                                show: true,
+                                fontSize: '12px',
+                                fontFamily: 'Nunito, sans-serif',
+                                fontWeight: 700,
+                                color: '#373d3f',
+                                offsetY: 4,
+                                formatter: function (val) {
+                                    return 'Ksh. ' + val
+                                }
+                            },
+                            total: {
+                                show: true,
+                                showAlways: false,
+                                label: 'Referrals',
+                                fontSize: '16px',
+                                fontFamily: 'Quicksand, sans-serif',
+                                fontWeight: 700,
+                                color: '#02024f',
+                                formatter: function (w) {
+                                    return 'Ksh. {{ user.referral_income.amount }}'
+                                }
+                            },
+                        }
+                    }
+                },
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return 'Ksh. ' + value;
+                    }
+                }
+            }
+        };
+        let incomeSummaryPieChart = new ApexCharts(
+            document.getElementById('income-summary-pie-chart'), incomeSummaryPieChartOptions
+        );
+        incomeSummaryPieChart.render();
+
+        // Award cash
+        let awardCashModal = new bootstrap.Modal(document.getElementById('award-cash-modal'));
+        $('#award-cash-form').on('submit', function (event) {
+            event.preventDefault();
+            let form = this;
+
+            let btn = $(this).find('button');
+            btn.text('Processing...');
+            btn.prop('disabled', true);
+
+            let amount = $('#award-cash-amount').val();
+
+            hideFormErrors(form);
+
+            $.ajax({
+                url: '{% url 'admin_award_cash' user.pk %}',
+                data: {
+                    'amount': amount,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                type: 'POST',
+                success: function (data) {
+                    btn.text('Award cash');
+                    btn.prop('disabled', false);
+                    form.reset()
+                    awardCashModal.hide()
+                    toastr.success('Cash awarded successfully.', 'Success!');
+                },
+                error: function (data) {
+                    btn.text('Award cash');
+                    btn.prop('disabled', false);
+                    let status = data.status;
+                    data = data.responseJSON;
+                    if (data && data.hasOwnProperty('errors')) {
+                        let errors = data['errors']
+                        showFormErrors(errors, 'award-cash-form');
+                    } else if (status === 403) {
+                        toastr.error('Permission denied. Please contact the system admin.', 'Error!');
+                    } else {
+                        toastr.error('Unable to process request. Please try again later.', 'Error!');
+                    }
+                }
+            })
+        })
+        // Change password
+        let changePasswordModal = new bootstrap.Modal(document.getElementById('change-password-modal'))
+        $('#change-password-form').submit(function (event) {
+            event.preventDefault();
+
+            hideFormErrors(this);
+            let newPassword1 = $('#change-password1').val();
+            let newPassword2 = $('#change-password2').val();
+            let btn = $(this).find('button');
+
+            if (newPassword1 === newPassword2) {
+                btn.text('Processing...');
+                btn.prop('disabled', true);
+
+                $.ajax({
+                    url: '{% url 'admin_change_user_password' user.pk %}',
+                    data: {
+                        'new_password1': newPassword1,
+                        'new_password2': newPassword2,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    type: 'POST',
+                    success: function () {
+                        toastr.success('Password changed successfully.', 'Success!');
+                        document.getElementById('change-password-form').reset();
+                        changePasswordModal.hide();
+                    },
+                    error: function (data) {
+                        let status = data.status;
+                        data = data.responseJSON;
+                        if (data.hasOwnProperty('errors')) {
+                            let errors = data['errors']
+                            showFormErrors(errors, 'change-password-form');
+                        } else if (status === 403) {
+                            toastr.error('Permission denied. Please contact the system admin.', 'Error!');
+                        } else {
+                            toastr.error('Unable to process request. Please try again later.', 'Error!');
+                        }
+                    }
+                })
+            } else {
+                toastr.info('Passwords do not match.', 'Info!');
+            }
+        })
+
+        // Spinwin top up
+        let spinWinTopUpModal = new bootstrap.Modal(document.getElementById('spinwin-top-up-modal'));
+
+        $('#spinwin-top-up-form').on('submit', function (event) {
+            event.preventDefault();
+            let form = this;
+            let btn = $(this).find('button');
+            btn.text('Processing...');
+            btn.prop('disabled', true);
+
+            let amount = $('#spinwin-top-up-amount').val();
+
+            hideFormErrors(form);
+
+            $.ajax({
+                url: '{% url 'admin_spinwin_top_up' user.pk %}',
+                data: {
+                    'amount': amount,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                type: 'POST',
+                success: function () {
+                    toastr.success('Top up successful.', 'Success!')
+                    form.reset();
+                    btn.text('Top up');
+                    btn.prop('disabled', false);
+                    spinWinTopUpModal.hide();
+                },
+                error: function (data) {
+                    btn.text('Top up');
+                    btn.prop('disabled', false);
+                    let status = data.status;
+                    data = data.responseJSON;
+                    if (data) {
+                        // Form errors
+                        if (data.hasOwnProperty('errors')) {
+                            let errors = data['errors']
+                            showFormErrors(errors, 'spinwin-top-up-form');
+                        }
+                    } else if (status === 403) {
+                        toastr.error('Permission denied. Please contact the system admin.', 'Error!');
+                    } else {
+                        toastr.error('Unable to process request. Please try again later.', 'Error!')
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,354 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}Mpesa sent - Admin{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md">
+                    <h4 class="quicksand-font fw-700 fs-22">Mpesa sent</h4>
+                </div>
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'index' %}" class="a-no-dec text-primary">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'custom_admin' %}" class="a-no-dec text-primary">
+                                    Dashboard
+                                </a>
+                            </li>
+                            {% if request.GET.q or request.GET.filter %}
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'admin_mpesa_sent' %}" class="a-no-dec text-primary">
+                                        Mpesa sent
+                                    </a>
+                                </li>
+                                {% if request.GET.q %}
+                                    <li class="breadcrumb-item active" aria-current="page">Search</li>
+                                {% endif %}
+                                {% if request.GET.filter %}
+                                    <li class="breadcrumb-item active" aria-current="page">Filter</li>
+                                {% endif %}
+                                {% else %}
+                                <li class="breadcrumb-item active" aria-current="page">Mpesa sent</li>
+                            {% endif %}
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="row my-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-credit">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="total-received-dropdown-menu-btn"
+                                            data-bs-toggle="dropdown" aria-expanded="false" style="visibility: hidden">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="total-received-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#breakdown-modal">
+                                                    Breakdown
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-credit-card icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 sms-credit">
+                                        {{ summary.total_transactions }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Total transactions
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-total-sent">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="sent-sms-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                            aria-expanded="false" style="visibility: hidden">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="sent-sms-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#sms-summary-modal">
+                                                    Summary
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-check icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700">
+                                        Ksh. {{ summary.total_sent }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Total sent
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-contacts">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="contacts-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                           aria-expanded="false" style="visibility: hidden">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="contacts-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#">View contacts</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#">Contacts groups</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-calendar-week icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700">
+                                        Ksh. {{ summary.this_month_sent }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Sent in {% now 'M' %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-sender-ids">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="sender-ids-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false"
+                                            style="visibility: hidden">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="sender-ids-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#view-sender-ids-modal">
+                                                    View all
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#"
+                                                    data-bs-target="#request-sender-id-modal" data-bs-toggle="modal">
+                                                    Request new
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-cloud-sun icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700">
+                                        Ksh. {{ summary.sent_today }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Sent today
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-4">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <form method="get" action="{% url 'admin_mpesa_sent' %}">
+                            <div class="input-group custom mb-3">
+                              <input type="text" class="form-control fs-14" placeholder="Search by phone or transaction ID"
+                                     aria-label="search" aria-describedby="search" name="q" required value="{{ request.GET.q }}"
+                                style="height: auto">
+                                <button class="input-group-text" id="search" type="submit"><i class="ik ik-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-auto ms-auto">
+                        <form method="get" id="filter-form">
+                            <div class="row gx-2">
+                                <div class="col-md-auto mb-3">
+                                    <label for="from-date-filter" class="fs-14 mb-1 d-block d-md-none">From</label>
+                                    <input type="datetime-local" class="form-control fs-14" id="from-date-filter"
+                                        placeholder="From" style="height: auto" autocomplete="off">
+                                </div>
+                                <div class="col-md-auto mb-3">
+                                    <label for="to-date-filter" class="fs-14 mb-1 d-block d-md-none">To</label>
+                                    <input type="datetime-local" class="form-control fs-14" id="to-date-filter"
+                                        placeholder="To" style="height: auto" autocomplete="off">
+                                </div>
+                                <div class="col-md-auto mb-3">
+                                    <button class="btn btn-primary custom btn-sm filter-btn" type="submit">
+                                        <span class="d-none d-md-block"><i class="fa fa-filter"></i></span>
+                                        <span class="d-block d-md-none">Filter</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <table class="basic-table">
+                    <tr class="fs-14 bg-1">
+                        <th>Phone</th>
+                        <th>Name</th>
+                        <th>Trans ID</th>
+                        <th>Amount</th>
+                        <th>Successful</th>
+                        <th>Sent at</th>
+                    </tr>
+                    {% for sent in mpesa_sent %}
+                        <tr class="fs-12">
+                            <td data-label="Phone">
+                                {{ sent.get_phone_number }}
+                            </td>
+                            <td data-label="Name" title="{{ sent.get_full_name }}" data-tippy-placement="top">
+                                {{ sent.get_full_name|truncatechars:15 }}
+                            </td>
+                            <td data-label="Trans ID">
+                                {{ sent.get_transaction_id }}
+                            </td>
+                            <td data-label="Amount">
+                                Ksh. {{ sent.get_amount }}
+                            </td>
+                            <td data-label="Successful">
+                                {% if sent.is_success %}
+                                    <span class="text-primary">Yes</span>
+                                    {% else %}
+                                    <span class="text-danger">No</span>
+                                {% endif %}
+                            </td>
+                            <td data-label="Sent at" class="to_local_datetime" data-utc="{{ sent.created_at|date:'Y-m-d H:i' }}">
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% if mpesa_sent.paginator.num_pages > 1  %}
+                    {% include 'paginate.html' with page_obj=mpesa_sent %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Filter
+        let fromDateFilter = $('#from-date-filter');
+        let toDateFilter = $('#to-date-filter');
+
+        {% if to_date %}
+            let toDateUtc = moment.utc('{{ to_date }}');
+            let toDateLocal = moment(toDateUtc).local();
+        {% endif %}
+
+        {% if from_date %}
+            let fromDateUtc = moment.utc('{{ from_date }}');
+            let fromDateLocal = moment(fromDateUtc).local();
+        {% endif %}
+
+        fromDateFilterPicker = flatpickr("#from-date-filter", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            {% if from_date %}
+                defaultDate: fromDateLocal.format("YYYY-MM-DD HH:mm")
+            {% endif %}
+        });
+        toDateFilterPicker = flatpickr("#to-date-filter", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            {% if to_date %}
+                defaultDate: toDateLocal.format("YYYY-MM-DD HH:mm")
+            {% endif %}
+        });
+        $('#from-date-filter, #to-date-filter').prop('readonly', false);
+
+        $('#filter-form').on('submit', function (event) {
+            event.preventDefault();
+            let from_date = '';
+            let to_date = '';
+            if (fromDateFilter.val()) {
+                from_date = moment(fromDateFilter.val(), ["YYYY-MM-DD HH:mm"]).utc().format("YYYY-MM-DD HH:mm");
+            }
+            if (toDateFilter.val()) {
+                to_date = moment(toDateFilter.val(), ["YYYY-MM-DD HH:mm"]).utc().format("YYYY-MM-DD HH:mm");
+            }
+            location.href = `{% url 'admin_mpesa_sent' %}?filter=${from_date}|${to_date}`;
+        })
+    </script>
+{% endblock %}

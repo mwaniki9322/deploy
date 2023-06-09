@@ -1,0 +1,232 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}Make money online{% endblock %}
+{% block css %}
+    <link href="{% static 'vendor/owl.carousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block hero-content %}
+    {% site_name as site_name %}
+    <!-- ======= Hero Section ======= -->
+    <section id="hero" class="hero d-flex align-items-center">
+        <div class="container" style="z-index: 1">
+            <div class="row align-items-center">
+            <div class="col-md-5 col-lg-6 text-center mx-auto pt-3 pt-md-9">
+              <h1 class="display-2 fw-700 fs-4 fs-md-5 fs-xl-6">
+                  Welcome to {{ site_name }}
+              </h1>
+              <p class="my-4">
+                  Creating simplest ways for you to make money online. All you need is your phone with internet connection.
+              </p>
+                <a class="button me-2" href="{% url 'signup' %}">
+                    Create Free Account
+                </a>
+            </div>
+          </div>
+        </div>
+    </section><!-- End Hero -->
+{% endblock %}
+{% block main-content %}
+    {% activation_amount as activation_amount %}
+    {% site_name as site_name %}
+    {% referral_bonus as referral_bonus %}
+    <section style="padding-bottom: 0px">
+        <div class="container" data-aos="fade-up">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/u3zn6Lr8s7g" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Process section -->
+	<section class="process-section spad">
+		<div class="container">
+			<div class="section-title">
+                        <h3>How It Works</h3>
+                    </div>
+			<div class="row mt-4">
+				<div class="col-md-4 process">
+					<div class="process-step">
+                        <i class="fa fa-user-plus"></i>
+						<h4>Create Account</h4>
+						<p>
+                            Create your new account in less than a minute. We never ask for unnecessary details!
+                        </p>
+					</div>
+				</div>
+                <div class="col-md-4 process">
+					<div class="process-step">
+						<i class="fa fa-user-check"></i>
+						<h4>Activate Account</h4>
+						<p>
+                            Unlock all features by activating your {{ site_name }} account through Mpesa.
+                            Payments are automated.
+                        </p>
+					</div>
+				</div>
+				<div class="col-md-4 process">
+					<div class="process-step">
+						<i class="fa fa-dollar-sign"></i>
+						<h4>Start Earning</h4>
+						<p>
+                            Start earning through referrals, playing SpinWin and much more.
+                            Money is legit and can be withdrawn at anytime.
+                        </p>
+					</div>
+				</div>
+			</div>
+            <div class="text-center mt-5">
+                    <a href="{% url 'signup' %}" class="button">
+                        Get Started Now
+                    </a>
+                </div>
+		</div>
+	</section>
+    <section>
+        <div class="container">
+            <div class="row g-0 align-items-center" style="margin-bottom: 100px">
+        <div class="col-lg-4 mx-auto d-none d-lg-block">
+        <img class="img-fluid" src="{% static 'images/referral.svg' %}">
+        </div>
+        <div class="col-lg-4 mx-auto text-center text-lg-start">
+        <h4 style="font-family: 'Quicksand', sans-serif; font-weight: 700;
+        font-size: 30px;">Refer and Earn</h4>
+        <img class="img-fluid d-lg-none d-block my-4" src="{% static 'images/referral.svg' %}">
+        <p style="margin-top: 20px; font-size: 16px; color: #585858; line-height: 25px">
+            You get awarded Ksh. {{ referral_bonus }} as referral bonus for each user you bring to our platform.
+            Share your link to earn more.
+        </p>
+        <a href="{% url 'signup' %}" class="button text-white mt-3">
+            Get Started
+        </a>
+        </div>
+        </div>
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-4 mx-auto text-center text-lg-start">
+        <h4 style="font-family: 'Quicksand', sans-serif; font-weight: 700;
+        font-size: 30px;">Play SpinWin</h4>
+        <img class="img-fluid d-lg-none d-block my-4" src="{% static 'images/spinwin.png' %}">
+        <p style="margin-top: 20px; font-size: 16px; color: #585858; line-height: 25px">
+            SpinWin gives you a chance to win upto Ksh. 1000 in every spin. Get started right away to make money.
+        </p>
+        <a href="{% url 'spinwin' %}" class="button text-white mt-3">
+        Play SpinWin
+        </a>
+        </div>
+        <div class="col-lg-4 mx-auto d-none d-lg-block">
+        <img class="img-fluid" src="{% static 'images/spinwin.png' %}">
+        </div>
+        </div>
+        </div>
+    </section>
+    <!-- ======= About Section ======= -->
+    <section class="">
+      <div class="container" data-aos="fade-up">
+
+
+          <div class="row">
+              <div class="col-lg-8 mx-auto">
+                  <img class="img-fluid" src="{% static 'images/about_us.png' %}" alt="">
+                  <div style="margin-top: 40px">
+                      <div class="row">
+                          <div class="col-lg-4" style="margin-bottom: 20px">
+                              <div class="row">
+                                  <div class="col-auto">
+                                      <div class="icon-center-wrap wrap7">
+                                            <i class="ik ik-eye icon"></i>
+                                      </div>
+                                  </div>
+                                  <div class="col">
+                                      <h6 class="fw-700">
+                                          Transparent
+                                      </h6>
+                                        <p class="my-0 py-0 fw-500 fs-14" style="color: #585858">
+                                            We believe in honesty and transparency
+                                        </p>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-lg-4" style="margin-bottom: 20px">
+                              <div class="row">
+                                  <div class="col-auto">
+                                      <div class="icon-center-wrap wrap7">
+                                            <i class="fa fa-dollar-sign icon"></i>
+                                      </div>
+                                  </div>
+                                  <div class="col">
+                                      <h6 style="font-family: 'Quicksand', sans-serif; font-weight: 700">
+                                          Quick payouts
+                                      </h6>
+                                        <p class="my-0 py-0" style="font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 500; color: #585858">
+                                            We disburse payments through M-pesa
+                                        </p>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-lg-4" style="margin-bottom: 20px">
+                              <div class="row">
+                                  <div class="col-auto">
+                                      <div class="icon-center-wrap wrap7">
+                                            <i class="fa icofont-headphone-alt icon"></i>
+                                      </div>
+                                  </div>
+                                  <div class="col">
+                                      <h6 style="font-family: 'Quicksand', sans-serif; font-weight: 700">
+                                          24/7 support
+                                      </h6>
+                                        <p class="my-0 py-0" style="font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 500; color: #585858">
+                                            Connect with our support team 24/7
+                                        </p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                   <div class="text-center mt-4">
+                       <a href="{% url 'signup' %}" class="button">
+                           Get Started Now
+                       </a>
+                   </div>
+              </div>
+          </div>
+      </div>
+    </section>
+    <!-- ======= Testimonials Section ======= -->
+    <section id="testimonials" class="testimonials">
+      <div class="container">
+
+        <div class="owl-carousel testimonials-carousel">
+
+          {% for foo in '0123' %}
+            <div class="testimonial-item">
+            <img src="{% static 'images/no-image-person.jpg' %}" class="testimonial-img" alt="">
+            <h3>Saul Goodman</h3>
+            <h4>Ceo &amp; Founder</h4>
+            <p>
+              <i class="bx bxs-quote-alt-left quote-icon-left"></i>
+              Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper.
+              <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+            </p>
+          </div>
+          {% endfor %}
+
+        </div>
+
+      </div>
+    </section><!-- End Testimonials Section -->
+{% endblock %}
+{% block js %}
+    <script src="{% static 'vendor/owl.carousel/owl.carousel.min.js' %}"></script>
+    <script>
+        // Testimonials carousel (uses the Owl Carousel library)
+  $(".testimonials-carousel").owlCarousel({
+    autoplay: true,
+    dots: true,
+    loop: true,
+    items: 1
+  });
+    </script>
+{% endblock %}

@@ -1,0 +1,266 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}{{ user.get_greeting_name }}'s referrals - Admin{% endblock %}
+{% block css %}
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md">
+                    <h4 class="quicksand-font fw-700 fs-22">{{ user.get_greeting_name }}'s referrals</h4>
+                </div>
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'custom_admin' %}" class="a-no-dec text-primary">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'admin_users' %}" class="a-no-dec text-primary">
+                                    Users
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'admin_single_user' user.pk %}" class="a-no-dec text-primary">
+                                    {{ user.username|truncatechars:10 }}
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Referrals</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="row my-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-credit">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="total-received-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                    aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="total-received-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#summary-modal">
+                                            Summary
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-users icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700 sms-credit">
+                                {{ user.total_referrals }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Total referrals
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-total-sent">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="sent-sms-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                    aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="sent-sms-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#sms-summary-modal">
+                                            Summary
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-user-check icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700">
+                                {{ activated }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Activated
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-contacts">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="contacts-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                   aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="contacts-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#">Summary</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-money-check-alt icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700">
+                                {{ user.referral_income.amount }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Total income
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-sender-ids">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="sender-ids-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="sender-ids-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#view-sender-ids-modal">
+                                            View all
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#"
+                                            data-bs-target="#request-sender-id-modal" data-bs-toggle="modal">
+                                            Request new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-cloud-sun icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700">
+                                {{ referred_today }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Referred today
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            <div class="mt-4">
+                <div class="row">
+                    {% for referral in referrals %}
+                        <div class="col-lg-3 col-md-6">
+                            <div class="user text-center" style="box-shadow: none">
+                                <img src="{{ referral.get_pic }}" class="user-profile-pic" alt="">
+                                <h5 class="name">
+                                    {{ referral.get_full_name|truncatechars:20 }}
+                                    {% if referral.is_activated %}
+                                        - <i class="fa fa-check-circle is-activated" data-tippy-placement="top" title="Activated"></i>
+                                    {% endif %}
+                                </h5>
+                                <p class="membership to_local_datetime" data-utc="{{ referral.date_joined|date:'Y-m-d H:i' }}"></p>
+                                <div class="stats">
+                                    <div class="row">
+                                        <div class="col-auto mx-auto text-center">
+                                            <h5>{{ referral.total_referrals }}</h5>
+                                            <p>
+                                                Referrals
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{% url 'admin_single_user' referral.pk %}" class="btn btn-primary custom btn-sm fs-12">
+                                    View profile
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center">
+                            <i class="fa fa-users" style="font-size: 50px; color: #9e9c9c"></i>
+                            <p class="fs-14 my-2">
+                                Referrals will appear here.
+                            </p>
+                            {% if user.is_activated %}
+                                <button class="btn btn-primary btn-sm custom clipboard-copy"
+                                    data-content="http://{{ request.get_host }}{% url 'signup' %}?rc={{ user.id_2 }}">
+                                    Copy Referral Link
+                                </button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if referrals.paginator.num_pages > 1  %}
+                    {% include 'paginate.html' with page_obj=referrals %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,551 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}Settings{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'vendor/cropper/cropper.min.css' %}">
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md">
+                    <h4 class="quicksand-font fw-700 fs-22">Settings</h4>
+                </div>
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'index' %}" class="a-no-dec text-primary">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'user_dashboard' %}" class="a-no-dec text-primary">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Settings</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="row col-lg-7 col-md-10 mx-auto mt-4">
+                <div class="card custom1">
+                    <div class="card-header" style="border-bottom: none">
+                        <h5>Profile details</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="profile-details-form">
+                            <ul class="form-errors text-danger fs-14" style="display: none" data-label="__all__">
+
+                            </ul>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="username" class="mb-1 fs-14">Username</label>
+                                    <input type="text" id="username" class="form-control fs-14" required maxlength="150"
+                                        value="{{ user.username }}" name="username">
+                                    <ul class="form-errors text-danger fs-14" style="display: none" data-label="username">
+
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="mb-1 fs-14">Email address</label>
+                                    <input type="email" id="email" class="form-control fs-14" required
+                                        value="{% if user.email %}{{ user.email }}{% endif %}" name="email">
+                                    <ul class="form-errors text-danger fs-14" style="display: none" data-label="email">
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name" class="mb-1 fs-14">First name</label>
+                                    <input type="text" id="first_name" class="form-control fs-14" required maxlength="150"
+                                        value="{{ user.first_name }}" name="first_name">
+                                    <ul class="form-errors text-danger fs-14" style="display: none" data-label="first_name">
+
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name" class="mb-1 fs-14">Last name</label>
+                                    <input type="text" id="last_name" class="form-control fs-14" required maxlength="150"
+                                        value="{{ user.last_name }}" name="last_name">
+                                    <ul class="form-errors text-danger fs-14" style="display: none" data-label="last_name">
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary custom" type="submit">
+                                Update
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card custom1">
+                    <div class="card-header" style="border-bottom: none">
+                        <h5>Billing details</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="billing-details-form">
+                            <ul class="form-errors text-danger fs-14" style="display: none" data-label="__all__">
+
+                            </ul>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="country" class="fs-14 fw-500 mb-1">
+                                        Country
+                                    </label>
+                                    <select id="country" class="form-select fs-14" required name="country">
+                                        <option value="">--Select country--</option>
+                                        {% for country in countries %}
+                                            <option value="{{ country.alpha_2 }}" {% if country.alpha_2 == user.country %}selected{% endif %}>{{ country.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <ul class="form-errors text-danger fs-14 mt-1" style="display: none" data-label="country"></ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="phone_number" class="fs-14 fw-500 mb-1">
+                                            Phone number
+                                        </label>
+                                        <input type="tel" class="form-control fs-14" id="phone_number" required name="phone_number" maxlength="50"
+                                            value="{{ user.get_local_phone_number }}">
+                                        <ul class="form-errors text-danger fs-14 mt-1" style="display: none" data-label="phone_number"></ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3" id="mpesa_input">
+                                    <label for="mpesa_number" class="mb-1 fs-14">Mpesa number</label>
+                                    <input type="tel" id="mpesa_number" class="form-control fs-14"
+                                        value="{{ user.get_local_mpesa_number }}" name="mpesa_number">
+                                    <ul class="form-errors text-danger fs-14" style="display: none" data-label="mpesa_number">
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary custom" type="submit">
+                                Update
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+        <div class="card custom1">
+            <div class="card-header" style="border-bottom: none">
+                <h5>Profile picture</h5>
+            </div>
+            <div class="card-body">
+                <button class="btn btn-primary custom" id="profile-pic-btn">
+                    Choose photo
+                </button>
+                <div id="profile-pic-cropping-container" style="margin-bottom: 20px; display: none;">
+                    <img id="profile-pic-cropping-img" style="height: 250px;" src="">
+                    <div class="d-flex justify-content-center mt-3">
+                        <button type="button" class="btn btn-primary custom btn-sm profile-pic-crop-zoom-in me-3">
+                            <i class="ik ik-zoom-in"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary custom btn-sm profile-pic-crop-zoom-out me-3">
+                            <i class="ik ik-zoom-out"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary custom btn-sm profile-pic-upload me-3">
+                            <i class="ik ik-upload"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm profile-pic-crop-destroy">
+                            <i class="ik ik-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <form id="profile-pic-form" style="position: absolute; left: -1000px; top: -1000px">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_class" value="profile_pic">
+                    <input type="hidden" id="profile-pic-x" name="x" required>
+                    <input type="hidden" id="profile-pic-y" name="y" required>
+                    <input type="hidden" id="profile-pic-h" name="h" required>
+                    <input type="hidden" id="profile-pic-w" name="w" required>
+                    <input type="file" accept="image/*" id="profile-pic-input" name="pic" required/>
+                </form>
+            </div>
+        </div>
+        <div class="card custom1">
+            <div class="card-header" style="border-bottom: none">
+                <h5>Change password</h5>
+            </div>
+            <div class="card-body">
+                <form id="change-password-form">
+                    <ul class="form-errors text-danger fs-14" style="display: none" data-label="__all__">
+
+                    </ul>
+                    <div class="row">
+                        <div class="col-md-4 fs-14 mb-3">
+                            <label for="old_password" class="fs-14 fw-500 mb-10">
+                                Old password
+                            </label>
+                            <input type="password" id="old_password" class="form-control fs-14" required
+                                name="old_password">
+                            <ul class="form-errors text-danger fs-14" style="display: none" data-label="old_password">
+
+                            </ul>
+                        </div>
+                        <div class="col-md-4 fs-14 mb-3">
+                            <label for="new_password1" class="fs-14 fw-500 mb-10">
+                                New password
+                            </label>
+                            <input type="password" id="new_password1" class="form-control fs-14" required
+                                name="new_password1">
+                            <ul class="form-errors text-danger fs-14" style="display: none" data-label="new_password1">
+
+                            </ul>
+                        </div>
+                        <div class="col-md-4 fs-14 mb-3">
+                            <label for="new_password2" class="fs-14 fw-500 mb-10">
+                                Repeat new password
+                            </label>
+                            <input type="password" id="new_password2" class="form-control fs-14" required
+                                name="new_password2">
+                            <ul class="form-errors text-danger fs-14" style="display: none" data-label="new_password2">
+
+                            </ul>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary custom" type="submit">
+                        Change password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+        </div>
+    </section>
+{% endblock %}
+{% block modals %}
+    <!-- Profile pic upload modal -->
+    <div class="modal fade" id="profile-pic-upload-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <h5 class="fw-700 fs-16">
+                        Profile picture
+                    </h5>
+                    <div id="profile-pic-upload-progress" class="fs-12"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'vendor/cropper/cropper.min.js' %}"></script>
+    <script>
+        // Toggle mpesa input on country change
+        let country = $('#country');
+        let mpesaNumber = $('#mpesa_number');
+
+        function toggleMpesaInput() {
+            let mpesaInput = $('#mpesa_input');
+
+            if (country.val() === 'KE') {
+                mpesaInput.css('display', 'block');
+                mpesaNumber.prop('required', true);
+            } else {
+                mpesaInput.css('display', 'none');
+                mpesaNumber.prop('required', false);
+            }
+        }
+
+        country.change(function(){
+            toggleMpesaInput();
+        });
+
+        $(document).ready(function () {
+            toggleMpesaInput();
+        })
+
+        // Profile details
+        $('#profile-details-form').on('submit', function (event) {
+            event.preventDefault();
+
+            let btn = $(this).find('button');
+            let btnText = btn.text();
+            btn.text('Updating...');
+            btn.prop('disabled', true);
+
+            hideFormErrors(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'account_settings' %}',
+                data: {
+                    'username': $('#username').val(),
+                    'email': $('#email').val(),
+                    'first_name': $('#first_name').val(),
+                    'last_name': $('#last_name').val(),
+                    'form_class': 'profile_details',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function(){
+                    btn.text(btnText);
+                    btn.prop('disabled', false);
+                    toastr.success('Profile details successfully updated.', 'Success!', {timeOut: 5000});
+                },
+                error: function(data){
+                    btn.text(btnText);
+                    btn.prop('disabled', false);
+
+                    data = data.responseJSON;
+                    if (data && data.hasOwnProperty('errors')) {
+                        let errors = data['errors']
+                        showFormErrors(errors, 'profile-details-form');
+                    } else {
+                        toastr.error('An error has occurred. Please try again.', 'Error!');
+                    }
+                }
+            })
+        })
+
+        // Billing details
+        $('#billing-details-form').on('submit', function (event) {
+            event.preventDefault();
+
+            let btn = $(this).find('button');
+            let btnText = btn.text();
+            btn.text('Updating...');
+            btn.prop('disabled', true);
+
+            hideFormErrors(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'account_settings' %}',
+                data: {
+                    'country': country.val(),
+                    'phone_number': $('#phone_number').val(),
+                    'mpesa_number': mpesaNumber.val(),
+                    'user_id': '{{ user.pk }}',
+                    'form_class': 'billing_details',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function(){
+                    btn.text(btnText);
+                    btn.prop('disabled', false);
+                    toastr.success('Billing details successfully updated.', 'Success!', {timeOut: 5000});
+                },
+                error: function(data){
+                    btn.text(btnText);
+                    btn.prop('disabled', false);
+
+                    data = data.responseJSON;
+                    if (data && data.hasOwnProperty('errors')) {
+                        let errors = data['errors']
+                        showFormErrors(errors, 'billing-details-form');
+                    } else {
+                        toastr.error('An error has occurred. Please try again.', 'Error!');
+                    }
+                }
+            })
+        })
+
+        // Password
+        $('#change-password-form').on('submit', function (event) {
+            event.preventDefault();
+
+            let form = this;
+
+            let btn = $(this).find('button');
+            let btnText = btn.text();
+            btn.text('Processing...');
+            btn.prop('disabled', true);
+
+            hideFormErrors(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'account_settings' %}',
+                data: {
+                    'old_password': $('#old_password').val(),
+                    'new_password1': $('#new_password1').val(),
+                    'new_password2': $('#new_password2').val(),
+                    'form_class': 'change_password',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function(){
+                    form.reset();
+                    btn.text(btnText);
+                    btn.prop('disabled', false);
+                    toastr.success('Password changed successfully.', 'Success!', {timeOut: 5000});
+                },
+                error: function(data){
+                    btn.text(btnText);
+                    btn.prop('disabled', false);
+
+                    data = data.responseJSON;
+                    if (data && data.hasOwnProperty('errors')) {
+                        let errors = data['errors']
+                        showFormErrors(errors, 'change-password-form');
+                    } else {
+                        toastr.error('An error has occurred. Please try again.', 'Error!', {timeOut: 5000});
+                    }
+                }
+            })
+        })
+
+        // Profile pic
+        let profilePicCroppingImg = $("#profile-pic-cropping-img");
+        let profilePicCroppingContainer = $('#profile-pic-cropping-container');
+        let profilePicBtn = $('#profile-pic-btn');
+        let profilePicUploadModal = new bootstrap.Modal(document.getElementById('profile-pic-upload-modal'));
+        let profilePicUploadProgress = document.getElementById('profile-pic-upload-progress');
+        let profilePicCropBoxData;
+        let profilePicCanvasData;
+
+        let profilePicUploadProgressBar = new ProgressBar.Line(profilePicUploadProgress, {
+            strokeWidth: 4,
+            easing: 'easeInOut',
+            duration: 1400,
+            color: '#7854F7',
+            trailColor: '#eee',
+            trailWidth: 1,
+            svgStyle: {width: '100%', height: '100%'},
+            text: {
+                style: {
+                    // Text color.
+                    // Default: same as stroke color (options.color)
+                    color: '#9e9c9c',
+                    padding: 0,
+                    margin: 0,
+                    transform: null,
+                },
+                autoStyleContainer: false
+            },
+            from: {color: '#7854F7'},
+            to: {color: '#7854F7'},
+            step: (state, bar) => {
+                bar.setText(Math.round(bar.value() * 100) + '% Uploaded');
+            }
+        });
+
+        profilePicBtn.on('click', function (event) {
+            event.preventDefault();
+            $('#profile-pic-input').click();
+        })
+
+        $("#profile-pic-input").change(function(){
+
+	        if (this.files && this.files[0]) {
+
+	            let fileSize = this.files[0].size;
+
+	            if (fileSize / (1024*1024) <= 10) {
+                    let reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        profilePicCroppingImg.attr("src", e.target.result);
+                        profilePicCroppingContainer.css('display', 'block');
+                        profilePicBtn.css('display', 'none');
+                        profilePicCroppingImg.cropper({
+                            viewMode: 1,
+                            aspectRatio: 1,
+                            minCropBoxWidth: 200,
+                            minCropBoxHeight: 200,
+                            ready: function () {
+                                profilePicCroppingImg.cropper("setCanvasData", profilePicCanvasData);
+                                profilePicCroppingImg.cropper("setCropBoxData", profilePicCropBoxData);
+                            }
+                        });
+                    };
+
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+	                toastr.error('Please choose an image less or equal to 10MB.', 'Error!', {timeOut: 5000});
+                }
+            }
+	    });
+
+        $(".profile-pic-crop-zoom-in").click(function () {
+            profilePicCroppingImg.cropper("zoom", 0.1);
+        });
+        $(".profile-pic-crop-zoom-out").click(function () {
+            profilePicCroppingImg.cropper("zoom", -0.1);
+        });
+        $('.profile-pic-crop-destroy').click(function () {
+            profilePicCroppingImg.cropper("destroy");
+            profilePicCroppingContainer.css('display', 'none');
+            profilePicBtn.css('display', 'block');
+        })
+        $('.profile-pic-upload').click(function () {
+            let cropData = profilePicCroppingImg.cropper("getData");
+            $("#profile-pic-x").val(cropData["x"]);
+            $("#profile-pic-y").val(cropData["y"]);
+            $("#profile-pic-h").val(cropData["height"]);
+            $("#profile-pic-w").val(cropData["width"]);
+            $('#profile-pic-form').submit();
+        })
+
+        $('#profile-pic-form').on('submit', function (event) {
+            event.preventDefault();
+            let btn = $('.profile-pic-upload');
+            btn.prop('disabled', true);
+
+            let form = this;
+            let formData = new FormData(form);
+
+            // Progress
+            profilePicUploadModal.show();
+            profilePicUploadProgressBar.animate(0.0);  // Number from 0.0 to 1.0
+
+            $.ajax({
+                xhr: function() {
+                    let xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            let percentComplete = evt.loaded / evt.total;
+                            // Update progress bar
+                            profilePicUploadProgressBar.animate(percentComplete);
+                        }
+                    }, false);
+                    return xhr;
+                },
+                type: 'POST',
+                url: '{% url 'account_settings' %}',
+                data: formData,
+                cache:false,
+                contentType: false,
+                processData: false,
+                success: function(data){
+                    btn.prop('disabled', false);
+                    profilePicUploadModal.hide();
+
+                    profilePicCroppingImg.cropper("destroy");
+                    profilePicCroppingContainer.css('display', 'none');
+                    profilePicBtn.css('display', 'block');
+
+                    toastr.success('Profile picture successfully changed.', 'Success!', {timeOut: 5000});
+
+                    $('.profile-pic').attr('src', data['pic_url']);
+                },
+                error: function(){
+                    btn.prop('disabled', false);
+                    toastr.error('An error has occurred. Please try again.', 'Error!', {timeOut: 5000});
+                }
+            })
+        })
+    </script>
+{% endblock %}

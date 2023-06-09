@@ -1,0 +1,59 @@
+{% load utils_tags %}
+{% for withdrawal in withdrawals %}
+    <div class="bulk-sms-summary-block mb-3">
+        <h5 class="fw-700 fs-14">
+            {{ currency|get_other_amount:withdrawal.amount }} {{ currency }}
+        </h5>
+        <div class="d-flex justify-content-between">
+            <p class="my-0 fs-12">
+                {% if withdrawal.is_cancelled %}
+                    <span class="text-danger">Cancelled</span>
+                    {% elif withdrawal.is_disbursed %}
+                    <span style="color: #0ACE8F">Cleared</span>
+                    {% else %}
+                    <span>Pending</span>
+                {% endif %}
+            </p>
+            <p class="my-0 fs-12 text-primary to_local_datetime" data-utc="{{ withdrawal.requested_at|date:'Y-m-d H:i' }}">
+
+            </p>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center">
+        <i class="fa fa-sign-out" style="font-size: 50px; color: #9e9c9c"></i>
+        <p class="fs-14 my-2">
+            Your withdrawals will appear here.
+        </p>
+    </div>
+{% endfor %}
+{% if withdrawals.paginator.num_pages > 1 %}
+    <div class="paginate">
+        <div class="d-flex justify-content-center align-items-center">
+            {% if withdrawals.has_previous %}
+                <a href="#" class="btn btn-primary custom btn-sm go-page" data-page="1">
+                    <i class="ik ik-chevrons-left"></i>
+                </a>
+                <a href="#" class="ms-2 btn btn-primary custom btn-sm go-page"
+                    data-page="{{ withdrawals.previous_page_number }}">
+                    <i class="ik ik-chevron-left"></i>
+                </a>
+            {% endif %}
+            <div class="mx-3">
+                <p class="my-0 fs-14">
+                    Page {{ withdrawals.number }} of {{ withdrawals.paginator.num_pages }}
+                </p>
+            </div>
+            {% if withdrawals.has_next %}
+                <a href="#" class="me-2 btn btn-primary custom btn-sm go-page"
+                    data-page="{{ withdrawals.next_page_number }}">
+                    <i class="ik ik-chevron-right"></i>
+                </a>
+                <a href="#" class="btn btn-primary custom btn-sm go-page"
+                    data-page="{{ withdrawals.paginator.num_pages }}">
+                    <i class="ik ik-chevrons-right"></i>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

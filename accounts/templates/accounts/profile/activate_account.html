@@ -1,0 +1,73 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block title %}
+    Activate account
+{% endblock %}
+{% block css %}
+    <style type="text/css">
+        #auth-second-block {
+            display: none;
+        }
+        #auth-first-block {
+            margin-left: auto; margin-right: auto;
+            box-shadow: 0 4px 12px rgba(120, 84, 247, 0.2);
+        }
+        .auth-card-shadow{
+            box-shadow: none;
+        }
+    </style>
+{% endblock %}
+{% block first-block %}
+    <div class="text-center mb-3">
+        <h4 class="fw-700" style="color: #4F515B;">
+            Activate account
+        </h4>
+        <p class="my-3 fs-14">
+            Unlock all {{ site_name }} features by activating your account for just
+            <strong class="text-primary">Ksh. {{ amount }}</strong>
+        </p>
+    </div>
+    <form id="activate-form">
+        <div class="d-grid">
+            <button class="button" type="submit">
+                Activate account
+            </button>
+        </div>
+    </form>
+    <div class="line-separator"></div>
+    <p class="fs-12 mb-0 mt-2 text-center">
+        Activate manually by sending <strong class="text-primary">Ksh. {{ amount }}</strong>
+        to M-pesa paybill number <strong class="text-primary">{{ paybill_number }}</strong>.
+        Use <strong class="text-primary">{{ account_number }}</strong> as account number.
+    </p>
+{% endblock %}
+{% block js %}
+    <script>
+        // Activate
+        $('#activate-form').on('submit', function (event) {
+            event.preventDefault();
+            let btn = $(this).find('button');
+            let btnText = btn.text();
+            btn.prop('disabled', true);
+            btn.text('Processing...');
+
+            $.ajax({
+                url: '{% url 'activate_account' %}',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                type: 'POST',
+                success: function () {
+                    btn.prop('disabled', false);
+                    btn.text(btnText);
+                    toastr.success('Payment request sent to your M-pesa number.', 'Success!');
+                },
+                error: function () {
+                    btn.prop('disabled', false);
+                    btn.text(btnText);
+                    toastr.error('Payment request failed. Please send your payment manually.', 'Error!');
+                }
+            })
+        })
+    </script>
+{% endblock %}

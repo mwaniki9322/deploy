@@ -1,0 +1,296 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}Tasks - Admin{% endblock %}
+{% block css %}
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md">
+                    <h4 class="quicksand-font fw-700 fs-22">Tasks</h4>
+                </div>
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'index' %}" class="a-no-dec text-primary">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'custom_admin' %}" class="a-no-dec text-primary">
+                                    Dashboard
+                                </a>
+                            </li>
+                            {% if request.GET.q %}
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'admin_tasks' %}" class="a-no-dec text-primary">
+                                        Tasks
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Search</li>
+                                {% else %}
+                                <li class="breadcrumb-item active" aria-current="page">Tasks</li>
+                            {% endif %}
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="row my-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-credit">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="total-received-dropdown-menu-btn"
+                                   data-bs-toggle="dropdown" aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="total-received-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#breakdown-modal">
+                                            Breakdown
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-wallet icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700 sms-credit">
+                                Ksh. {{ tasks_wallets }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Total in tasks wallets
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-total-sent">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="sent-sms-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                    aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="sent-sms-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#sms-summary-modal">
+                                            Summary
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-sign-out-alt icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700">
+                                Ksh. {{ ready_to_redeem }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Ready to redeem
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <div class="mt-4">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <form method="get" action="{% url 'admin_tasks' %}">
+                            <div class="input-group custom mb-3">
+                              <input type="number" min="1" class="form-control fs-14" placeholder="Search by index"
+                                     aria-label="search" aria-describedby="search" name="q" required value="{{ request.GET.q }}"
+                                style="height: auto">
+                                <button class="input-group-text" id="search" type="submit"><i class="ik ik-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row my-4">
+                    {% for item in items %}
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card custom2 bulk-sms-credit">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="dropdown">
+                                                <a href="#" class="float-end more" id="task-menu-btn-{{ item.pk }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ik ik-menu"></i>
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="task-menu-btn-{{ item.pk }}">
+                                                    <li>
+                                                        <a class="dropdown-item fs-14" href="{% url 'admin_edit_task' item.pk %}">
+                                                            Edit
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item fs-14 delete-task" href="#" data-index="{{ item.index }}" data-id="{{ item.pk }}">
+                                                            Delete
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5 class="fw-700 sms-credit">
+                                                Task {{ item.index }}
+                                            </h5>
+                                            <p class="my-0 fs-14">
+                                                Taken {{ item.takings_count }} times
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center">
+                            <i class="fa fa-list" style="font-size: 50px; color: #9e9c9c"></i>
+                            <p class="fs-14 my-2">
+                                Tasks will appear here.
+                            </p>
+                            <a href="{% url 'admin_new_task' %}" class="btn btn-primary btn-sm custom">
+                                New task
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% if items.paginator.num_pages > 1  %}
+                    {% include 'paginate.html' with page_obj=items %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block modals %}
+    <!-- Delete modal -->
+    <div class="modal fade" id="delete-task-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-danger">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Delete task
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <form id="delete-task-form">
+                            <p class="my-2 fs-14" id="delete-task-p">
+
+                            </p>
+                            <input type="hidden" id="delete-task-id">
+                            <button class="btn btn-danger btn-sm" type="submit">
+                                Sure, delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block bottom-content %}
+    <div id="fixed-bottom-overlay">
+        <a href="{% url 'admin_new_task' %}">
+            <div class="icon-center-wrap wrap4">
+                <i class="fa fa-plus icon"></i>
+            </div>
+        </a>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        // Delete
+        let deleteTaskModal = new bootstrap.Modal(document.getElementById('delete-task-modal'))
+        $('.delete-task').on('click', function (event) {
+            event.preventDefault();
+            let index = $(this).data('index');
+            $('#delete-task-id').val($(this).data('id'))
+            $('#delete-task-p').html(`Are you sure you want to delete <strong>Task ${index}</strong>?`)
+            deleteTaskModal.show()
+        })
+
+        $('#delete-task-form').on('submit', function (event) {
+            event.preventDefault();
+            let btn = $(this).find('button')
+            btn.text('Processing...');
+            btn.prop('disabled', true);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'admin_delete_task' %}',
+                data: {
+                    'id': $('#delete-task-id').val(),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(){
+                   location.reload()
+                },
+                error: function(){
+                    btn.text('Sure, delete');
+                    btn.prop('disabled', false);
+                    toastr.error('Unable to delete task. Please try again.', 'Error!')
+                }
+            })
+        })
+    </script>
+{% endblock %}

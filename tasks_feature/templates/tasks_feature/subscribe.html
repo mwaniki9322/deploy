@@ -1,0 +1,246 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}Tasks{% endblock %}
+{% block css %}
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md">
+                    <h4 class="quicksand-font fw-700 fs-22">Tasks</h4>
+                </div>
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'index' %}" class="a-no-dec text-primary">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'user_dashboard' %}" class="a-no-dec text-primary">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'user_tasks' %}" class="a-no-dec text-primary">
+                                    Tasks
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Subscribe</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="row">
+                    <div class="col-lg-5 col-md-6 mx-auto">
+                        <div class="card custom1" style="overflow: hidden; border: none">
+                            <div class="card-header bg-1" style="border-bottom: none">
+                                <h5 class="text-white">Subscribe/Renew package</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="subscribe-form">
+                                    <ul class="form-errors text-danger fs-14" style="display: none" data-label="__all__">
+
+                                    </ul>
+                                    <div class="mb-3">
+                                        <label for="package" class="fs-14 fw-600">Package</label>
+                                        <select id="package" name="package" required class="form-select fs-14 my-1">
+                                            {% for package in packages %}
+                                                <option value="{{ package.code }}" {% if user.tasks_package == package.code %}selected{% endif %}>{{ package.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <ul class="form-errors text-danger fs-14" style="display: none" data-label="tasks_package">
+
+                                        </ul>
+                                    </div>
+                                    <label for="package" class="fs-14 fw-600 mb-3">Description</label>
+                                    <ul class="fs-14 pkg-desc d-none" data-pkg="BRONZE">
+                                        <li>
+                                            Earn Ksh. 7 per task
+                                        </li>
+                                        <li>
+                                            Get 10 tasks every day. The task is reading a page(10pages)
+                                        </li>
+                                        <li>
+                                            Package valid for 1 month
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 70 per day
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 490 per week
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 2000 in 1 month
+                                        </li>
+                                    </ul>
+                                    <ul class="fs-14 pkg-desc d-none" data-pkg="SILVER">
+                                        <li>
+                                            Earn Ksh. 13 per task
+                                        </li>
+                                        <li>
+                                            Get 13 tasks every day. The task is reading a page(13pages)
+                                        </li>
+                                        <li>
+                                            Package valid for 1 month
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 170 per day
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 1200 per week
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 5100 in 1 month
+                                        </li>
+                                    </ul>
+                                    <ul class="fs-14 pkg-desc d-none" data-pkg="GOLD">
+                                        <li>
+                                            Earn Ksh. 15 per task
+                                        </li>
+                                        <li>
+                                            Get 15 tasks every day. The task is reading a page(15pages)
+                                        </li>
+                                        <li>
+                                            Package valid for 3 months
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 225 per day
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 1575 per week
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 6750 in 1 month
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 20,250 in 3 months
+                                        </li>
+                                    </ul>
+                                    <ul class="fs-14 pkg-desc d-none" data-pkg="PLATINUM">
+                                        <li>
+                                            Earn Ksh. 25 per task
+                                        </li>
+                                        <li>
+                                            Get 30 tasks every day. The task is reading a page(30pages)
+                                        </li>
+                                        <li>
+                                            Package valid for 6 months
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 750 per day
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 5250 per week
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 21,000 in 1 month
+                                        </li>
+                                        <li>
+                                            Earn Ksh. 126,000 in 6 months
+                                        </li>
+                                    </ul>
+                                    <div class="d-grid mt-3">
+                                        <button class="button" type="submit">
+                                            Subscribe for Ksh. --
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="line-separator"></div>
+                                <p class="fs-12 mb-0 mt-2 text-center">
+                                    If you have trouble making payment, manually send <strong class="text-primary pkg-amount">Ksh. --</strong>
+                                    to M-pesa paybill number <strong class="text-primary">{{ paybill_number }}</strong>.
+                                    Use <strong class="text-primary">{{ account_number }}</strong> as account number.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block js %}
+    <script>
+        let packages = {{ packages_dict|safe }};
+
+        $('#package').on('change', function () {
+           togglePackage()
+        })
+
+        $(document).ready(function () {
+            togglePackage()
+        })
+
+        function togglePackage() {
+            let pkg = $('#package').val();
+            $('#subscribe-form').find('button').text('Subscribe for Ksh. ' + packages[pkg].price)
+
+            $('.pkg-desc').addClass('d-none');
+            $(`.pkg-desc[data-pkg=${pkg}]`).removeClass('d-none');
+
+            $('.pkg-amount').text('Ksh. ' + packages[pkg].price)
+        }
+
+        $('#subscribe-form').on('submit', function (event) {
+            event.preventDefault()
+
+            let btn = $(this).find('button');
+            let btnText = btn.text();
+            btn.text('Processing...');
+            btn.prop('disabled', true);
+
+            hideFormErrors(this);
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'tasks_subscribe' %}',
+                data: {
+                    'tasks_package': $('#package').val(),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function(){
+                    btn.text(btnText);
+                    btn.prop('disabled', false);
+                    toastr.success('Payment request sent to your Mpesa number.', 'Success!', {timeOut: 5000});
+                },
+                error: function(data){
+                    btn.text(btnText);
+                    btn.prop('disabled', false);
+
+                    data = data.responseJSON;
+                    if (data && data.hasOwnProperty('errors')) {
+                        let errors = data['errors']
+                        showFormErrors(errors, 'subscribe-form');
+                    } else {
+                        toastr.error('An error has occurred. Please make manual payment from Mpesa menu.', 'Error!');
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

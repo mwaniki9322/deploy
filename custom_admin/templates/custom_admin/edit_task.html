@@ -1,0 +1,138 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}Edit task - Admin{% endblock %}
+{% block css %}
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md">
+                    <h4 class="quicksand-font fw-700 fs-22">Edit task</h4>
+                </div>
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'index' %}" class="a-no-dec text-primary">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'custom_admin' %}" class="a-no-dec text-primary">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'admin_tasks' %}" class="a-no-dec text-primary">
+                                    Tasks
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-lg-6 mx-auto">
+                    <div class="card custom1">
+                        <div class="card-header" style="border-bottom: none">
+                            <h5>Task {{ item.index }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="edit-task-form">
+                                {% csrf_token %}
+                                <ul class="form-errors text-danger fs-14 mt-1" style="display: none" data-label="__all__">
+
+                                </ul>
+                                <div class="mb-3">
+                                    <label class="mb-1 fs-14">Content</label>
+                                    <div class="balloon-ckeditor-wrapper mb-3">
+                                        <div id="editor">{{ item.content|safe }}</div>
+                                    </div>
+                                    <ul class="form-errors text-danger fs-14 mt-1" style="display: none" data-label="content">
+
+                                    </ul>
+                                </div>
+                                <button class="btn btn-primary custom" id="edit-task-btn">
+                                    Submit changes
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'vendor/ckeditor5/build/ckeditor.js' %}"></script>
+    <script>
+        let editor;
+        $(document).ready(function () {
+            editor = createCKEditor(
+                document.querySelector('#editor')
+            )
+        })
+
+        // Submit
+        $('#edit-task-form').on('submit', function (event) {
+            event.preventDefault();
+
+            let btn = $('#edit-task-btn');
+            btn.text('Submitting...');
+            btn.prop('disabled', true);
+
+            let form = this;
+            let formData = new FormData(form);
+            formData.set('content', editor.getData());
+
+            hideFormErrors(form)
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'admin_edit_task' item.pk %}',
+                data: formData,
+                cache:false,
+                contentType: false,
+                processData: false,
+                success: function(){
+                    location.href = '{% url 'admin_tasks' %}';
+                },
+                error: function(data){
+                    btn.text('Submit changes');
+                    btn.prop('disabled', false);
+                    data = data.responseJSON;
+                    if (data) {
+                        if (data.hasOwnProperty('errors')) {
+                            showFormErrors(data['errors'], 'edit-task-form')
+                        }
+                    } else {
+                        toastr.error('Unable to process request. Please try again.', 'Error!')
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

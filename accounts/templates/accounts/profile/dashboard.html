@@ -1,0 +1,880 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}Dashboard{% endblock %}
+{% block css %}
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+            <div class="col">
+                <h4 class="quicksand-font fw-700 fs-22">Dashboard</h4>
+            </div>
+            <div class="col-auto">
+                {% if user.is_activated %}
+                    <button class="btn btn-primary btn-sm custom clipboard-copy"
+                        data-content="http://{{ request.get_host }}{% url 'signup' %}?rc={{ user.id_2 }}">
+                        Copy referral link
+                    </button>
+                    {% else %}
+                    <a href="{% url 'activate_start' %}" class="btn btn-primary btn-sm custom">
+                        Activate account
+                    </a>
+                {% endif %}
+            </div>
+            </div>
+            <div class="row my-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-credit">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="wallet-bal-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="wallet-bal-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#withdraw-modal">
+                                                    Withdraw
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-credit-card icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 main_bal">
+                                        {{ currency|get_other_amount:user.wallet_bal }} {{ currency }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Wallet balance
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-total-sent">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="earnings-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="earnings-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#earnings-summary-modal">
+                                                    Summary
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#earnings-view-modal">
+                                                    View earnings
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-money-check-alt icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 total_income">
+                                        {{ currency|get_other_amount:user.total_income }} {{ currency }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Earnings
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-contacts">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="delivery-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="delivery-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#"
+                                                    data-bs-toggle="modal" data-bs-target="#withdrawals-view-modal">
+                                                    View withdrawals
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-sign-out icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 total_withdrawals">
+                                        {{ currency|get_other_amount:user.total_withdrawals }} {{ currency }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Withdrawals
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-sender-ids">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="sender-ids-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="sender-ids-dropdown-menu-btn">
+                                            {% if user.is_activated %}
+                                                <li>
+                                                    <a class="dropdown-item fs-14" href="{% url 'referrals' %}">
+                                                        View referrals
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item fs-14 clipboard-copy" href="#"
+                                                        data-content="http://{{ request.get_host }}{% url 'signup' %}?rc={{ user.id_2 }}">
+                                                        Copy referral link
+                                                    </a>
+                                                </li>
+                                                {% else %}
+                                                <li>
+                                                    <a class="dropdown-item fs-14" href="{% url 'activate_start' %}">
+                                                        Activate account
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-users icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700">
+                                        {{ user.total_referrals }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Referrals
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-4">
+                <div class="col-lg-6">
+                    <div class="card custom1">
+                        <div class="card-header pb-0" style="border-bottom: none">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5>Earnings Trend</h5>
+                                <a href="#" class="fs-14 a-no-dec text-primary fw-600"
+                                    style="font-family: 'Quicksand', sans-serif" id="income-trend-dates">
+                                    --
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div style="max-width: 100%; min-width: 100%">
+                                <div id="income-trend-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card custom1" style="height: 21.1rem">
+                        <div class="card-header" style="border-bottom: none">
+                            <h5>Income Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div style="max-width: 100%;" class="center-xy">
+                                <div id="income-summary-pie-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="card custom3 mb-20">
+                        <div class="card-body">
+                            <div class="top-block d-flex justify-content-between align-items-center">
+                                <i class="ik ik-loader"></i>
+                                <a href="#" class="text-white">
+                                    <i class="ik ik-more-horizontal"></i>
+                                </a>
+                            </div>
+                            <h5 class="fw-700 fs-18 daily_income">
+                                {{ currency|get_other_amount:user.daily_income }} {{ currency }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Avg. daily income
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card custom3 mb-20">
+                        <div class="card-body">
+                            <div class="top-block d-flex justify-content-between align-items-center">
+                                <i class="fa fa-calendar-week"></i>
+                                <a href="#" class="text-white">
+                                    <i class="ik ik-more-horizontal"></i>
+                                </a>
+                            </div>
+                            <h5 class="fw-700 fs-18 this_month_income">
+                                {{ currency|get_other_amount:user.get_this_month_income }} {{ currency }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Earned in {% now 'M' %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-lg-grid text-center">
+                        <a href="#" class="btn btn-primary btn-sm custom" data-bs-toggle="modal"
+                           data-bs-target="#earnings-view-modal">
+                            View Earnings
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-4">
+                <div class="col-lg-4 col-md-6 mx-auto">
+                    <div class="card custom1" style="overflow: hidden">
+                        <img class="img-fluid" src="{% static 'images/tasks.jpg' %}" alt="">
+                        <div class="card-body text-center">
+                            <h4 class="fw-700 fs-20">Daily Tasks</h4>
+                            <p class="fs-14">
+                                Make money by simply taking daily tasks.
+                            </p>
+                            <a href="{% url 'user_tasks' %}" class="btn btn-primary custom">
+                                Take tasks
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mx-auto">
+                    <div class="card custom1" style="overflow: hidden">
+                        <img class="img-fluid" src="{% static 'images/spin-wheel.png' %}" alt="">
+                        <div class="card-body text-center">
+                            <h4 class="fw-700 fs-20">SpinWin</h4>
+                            <p class="fs-14">
+                                Win upto <strong class="text-primary">Ksh. 1,000</strong> every spin with SpinWin.
+                            </p>
+                            <a href="{% url 'spinwin' %}" class="btn btn-primary custom">
+                                Play SpinWin
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h4 class="fw-700 fs-16 mb-3">Referrals</h4>
+                <div class="row">
+                    {% for referral in referrals %}
+                        <div class="col-lg-3 col-md-6">
+                            <div class="user text-center" style="box-shadow: none">
+                                <img src="{{ referral.get_pic }}" class="user-profile-pic" alt="">
+                                <h5 class="name">
+                                    {{ referral.get_full_name|truncatechars:20 }}
+                                    {% if referral.is_activated %}
+                                        - <i class="fa fa-check-circle is-activated" data-tippy-placement="top" title="Activated"></i>
+                                    {% endif %}
+                                </h5>
+                                <p class="membership to_local_datetime" data-utc="{{ referral.date_joined|date:'Y-m-d H:i' }}"></p>
+                                <div class="stats" style="padding-bottom: 0">
+                                    <div class="row">
+                                        <div class="col-auto mx-auto text-center">
+                                            <h5>{{ referral.total_referrals }}</h5>
+                                            <p>
+                                                Referrals
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center">
+                            <i class="fa fa-users" style="font-size: 50px; color: #9e9c9c"></i>
+                            <p class="fs-14 my-2">
+                                Your referrals will appear here.
+                            </p>
+                            {% if user.is_activated %}
+                                <button class="btn btn-primary btn-sm custom clipboard-copy"
+                                    data-content="http://{{ request.get_host }}{% url 'signup' %}?rc={{ user.id_2 }}">
+                                    Copy Referral Link
+                                </button>
+                                {% else %}
+                                <a href="{% url 'activate_start' %}" class="btn btn-primary btn-sm custom">
+                                    Activate Account
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if referrals %}
+                    <div class="text-center">
+                        <a href="{% url 'referrals' %}" class="btn btn-primary btn-sm custom">
+                            All referrals
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block bottom-content %}
+    {% referral_bonus as referral_bonus %}
+    <!-- Wrapper / End -->
+    <div id="fixed-bottom-overlay" class="d-none">
+        <div class="icon-center-wrap wrap4" style="animation: shadow-pulse 1s infinite;" onclick="showAttention()">
+            {% if user.is_activated %}
+                <i class="ik ik-copy icon"></i>
+                {% else %}
+                <i class="fa fa-user-check icon"></i>
+            {% endif %}
+        </div>
+    </div>
+    <div class="attention">
+            <div class="img">
+                <div class="overlay"></div>
+                <img class="img-fluid" src="{% static 'images/affiliate-marketing.png' %}" alt="">
+                <div class="close-btn">
+                    <i class="fa fa-times"></i>
+                </div>
+            </div>
+            <div class="info p-3">
+                <h4 class="fw-700 fs-16 mb-0">Earn through referrals</h4>
+                <p class="fs-12 my-1">
+                    Get awarded <strong class="text-primary">Ksh. {{ referral_bonus }}</strong> for each user you invite.
+                    {% if user.is_activated %}
+                        Share your link to earn more.
+                        {% else %}
+                         Activate your account to start earning.
+                    {% endif %}
+                </p>
+                {% if user.is_activated %}
+                    <button class="btn btn-primary btn-sm custom clipboard-copy"
+                        data-content="http://{{ request.get_host }}{% url 'signup' %}?rc={{ user.id_2 }}">
+                        Copy referral link
+                    </button>
+                    {% else %}
+                    <a href="{% url 'activate_start' %}" class="btn btn-primary btn-sm custom">
+                        Activate account
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+{% endblock %}
+{% block modals %}
+    {% min_withdrawal as min_withdrawal %}
+    {% withdrawal_charge as withdrawal_charge %}
+    <!-- Earnings summary modal -->
+    <div class="modal fade" id="earnings-summary-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Earnings summary
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <div class="bulk-sms-summary-block mb-3">
+                            <h5 class="fw-700 fs-14">Referral bonuses</h5>
+                            <div class="d-flex justify-content-between">
+                                <p class="my-0 fs-12">
+                                    Earned - {{ currency|get_other_amount:user.referral_income.amount }} {{ currency }}
+                                </p>
+                                <p class="my-0 fs-12 text-primary">
+                                    {{ user.referral_income.percentage }}%
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bulk-sms-summary-block mb-3">
+                            <h5 class="fw-700 fs-14">Tasks</h5>
+                            <div class="d-flex justify-content-between">
+                                <p class="my-0 fs-12">
+                                    Earned - {{ currency|get_other_amount:user.tasks_income.amount }} {{ currency }}
+                                </p>
+                                <p class="my-0 fs-12 text-primary">
+                                    {{ user.tasks_income.percentage }}%
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bulk-sms-summary-block mb-3">
+                            <h5 class="fw-700 fs-14">SpinWin</h5>
+                            <div class="d-flex justify-content-between">
+                                <p class="my-0 fs-12">
+                                    Earned - {{ currency|get_other_amount:user.spinwin_income.amount }} {{ currency }}
+                                </p>
+                                <p class="my-0 fs-12 text-primary">
+                                    {{ user.spinwin_income.percentage }}%
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bulk-sms-summary-block">
+                            <h5 class="fw-700 fs-14">Awards</h5>
+                            <div class="d-flex justify-content-between">
+                                <p class="my-0 fs-12">
+                                    Earned - {{ currency|get_other_amount:user.awards_income.amount }} {{ currency }}
+                                </p>
+                                <p class="my-0 fs-12 text-primary">
+                                    {{ user.awards_income.percentage }}%
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings view modal -->
+    <div class="modal fade" id="earnings-view-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Earnings
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3" id="earnings-view-wrapper">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawals view modal -->
+    <div class="modal fade" id="withdrawals-view-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Withdrawals
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3" id="withdrawals-view-wrapper">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw modal -->
+    <div class="modal fade" id="withdraw-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Withdraw
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <form id="withdraw-form">
+                            <ul class="form-errors text-danger fs-14" style="display: none" data-label="__all__">
+
+                            </ul>
+                            <div class="mb-3">
+                                <label for="withdraw-amount" class="mb-1 fs-14 fw-600">
+                                    Amount in {{ currency }}
+                                </label>
+                                <input type="number" class="form-control fs-14" id="withdraw-amount"
+                                    required min="{{ currency|get_other_amount:min_withdrawal }}">
+                                <ul class="form-errors text-danger fs-14" style="display: none" data-label="amount">
+
+                                </ul>
+                            </div>
+                            <p class="fs-12 mb-3">
+                                <span class="text-primary">{{ currency|get_other_amount:withdrawal_charge }} {{ currency }}</span> from withdrawn amount
+                                will get deducted to cater for transactions cost.
+                            </p>
+                            <button class="btn btn-primary btn-sm custom" type="submit">
+                                Withdraw
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert modal -->
+    <div class="modal fade" id="alert-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content p-0" style="overflow: hidden;">
+                <div class="modal-body p-0">
+                    <div class="p-3 text-white bg-1">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0 p-0 fw-700 fs-16 text-white">
+                                    Introducing Daily Tasks
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" data-bs-dismiss="modal" class="a-no-dec text-white">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <p class="m-0 fs-14">
+                            Hi {{ user.username }},<br>Make money by taking simple daily tasks.
+                        </p>
+                        <a href="{% url 'user_tasks' %}" class="btn btn-primary custom btn-sm mt-2">
+                            Take tasks
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        // Alert
+        let alertModal = new bootstrap.Modal(document.getElementById('alert-modal'));
+        setTimeout(function () {
+            alertModal.show()
+        }, 3000)
+
+        // Withdraw
+        let withdrawModal = new bootstrap.Modal(document.getElementById('withdraw-modal'));
+        $('#withdraw-form').on('submit', function (event) {
+            event.preventDefault();
+            let form = this;
+
+            let btn = $(this).find('button');
+            btn.text('Processing...');
+            btn.prop('disabled', true);
+
+            let amount = $('#withdraw-amount').val();
+
+            hideFormErrors(form);
+
+            $.ajax({
+                url: '{% url 'withdraw' %}',
+                data: {
+                    'amount': amount,
+                    'id_2': '{{ user.id_2 }}',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                type: 'POST',
+                success: function (data) {
+                    btn.text('Withdraw');
+                    btn.prop('disabled', false);
+                    form.reset()
+                    withdrawModal.hide()
+                    toastr.success(data['message'], 'Success!')
+                },
+                error: function (data) {
+                    btn.text('Withdraw');
+                    btn.prop('disabled', false);
+                    data = data.responseJSON;
+                    if (data && data.hasOwnProperty('errors')) {
+                        let errors = data['errors']
+                        showFormErrors(errors, 'withdraw-form');
+                    } else {
+                        toastr.error('Unable to process request. Please try again later.', 'Error!')
+                    }
+                }
+            })
+        })
+
+        // View earnings
+        let earningsViewModalElem = document.getElementById('earnings-view-modal');
+        let earningsViewWrapper = $('#earnings-view-wrapper');
+        earningsViewModalElem.addEventListener('show.bs.modal', function (event) {
+            loadEarnings('{% url 'earnings' %}?page=1');
+        })
+
+        earningsViewWrapper.on('click', function (event) {
+            event.preventDefault();
+            let target = event.target;
+            if (target.tagName === 'I') {
+                target = target.parentElement;
+            }
+            if ($(target).hasClass('go-page')) {
+                let url = `{% url 'earnings' %}?page=${$(target).data('page')}`;
+                loadEarnings(url);
+            }
+        })
+
+        function loadEarnings(url) {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (data) {
+                    earningsViewWrapper.html(data);
+                    earningsViewWrapper.find('.to_local_datetime').each(function(i, obj) {
+                        let utc_datetime = moment.utc($(this).data('utc'));
+                        let local_datetime = moment(utc_datetime).local();
+                        local_datetime = local_datetime.format("MMM. DD, YYYY, hh:mm a");
+                        $(this).text(local_datetime);
+                    });
+                },
+                error: function () {
+                    toastr.error('Unable to load earnings. Please reload this page.', 'Error!');
+                }
+            })
+        }
+
+        // View withdrawals
+        let withdrawalsViewModalElem = document.getElementById('withdrawals-view-modal');
+        let withdrawalsViewWrapper = $('#withdrawals-view-wrapper');
+        withdrawalsViewModalElem.addEventListener('show.bs.modal', function (event) {
+            loadWithdrawals('{% url 'withdrawals' %}?page=1');
+        })
+
+        withdrawalsViewWrapper.on('click', function (event) {
+            event.preventDefault();
+            let target = event.target;
+            if (target.tagName === 'I') {
+                target = target.parentElement;
+            }
+            if ($(target).hasClass('go-page')) {
+                let url = `{% url 'withdrawals' %}?page=${$(target).data('page')}`;
+                loadWithdrawals(url);
+            }
+        })
+
+        function loadWithdrawals(url) {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (data) {
+                    withdrawalsViewWrapper.html(data);
+                    withdrawalsViewWrapper.find('.to_local_datetime').each(function(i, obj) {
+                        let utc_datetime = moment.utc($(this).data('utc'));
+                        let local_datetime = moment(utc_datetime).local();
+                        local_datetime = local_datetime.format("MMM. DD, YYYY, hh:mm a");
+                        $(this).text(local_datetime);
+                    });
+                },
+                error: function () {
+                    toastr.error('Unable to load withdrawals. Please reload this page.', 'Error!');
+                }
+            })
+        }
+
+        // Income trend chart
+        let incomeTrendChartData = {{ income_trend_chart_data }};
+        let incomeTrendChartOptions = {
+            chart: {
+                height: 253,
+                type: "line",
+                toolbar: {
+                    show: true,
+                },
+            },
+            series: incomeTrendChartData['series'],
+            stroke: {
+                width: [0, 4],
+                curve: 'smooth'
+            },
+            labels: incomeTrendChartData['labels'],
+            xaxis: {
+                type: "category",
+                lines: {
+                    show: false,
+                },
+                axisBorder: {
+                    show: false,
+                },
+            },
+            yaxis: {
+                title: {
+                    text: "Earnings"
+                },
+            },
+            grid: {
+                borderColor: '#d8d8d8',
+                strokeDashArray: 5,
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return value + ' {{ currency }}';
+                    }
+                }
+            }
+        };
+        let incomeTrendChart = new ApexCharts(
+            document.getElementById('income-trend-chart'), incomeTrendChartOptions
+        );
+        incomeTrendChart.render();
+        $('#income-trend-dates').text(incomeTrendChartData['labels'][0] + ' - ' + incomeTrendChartData['labels'][6]);
+
+        // Income summary pie chart
+        let incomeSummaryPieChartOptions = {
+            chart: {
+                type: "donut",
+                toolbar: {
+                    show: true,
+                },
+            },
+            series: [
+                {{ currency|get_other_amount:user.referral_income.amount }},
+                {{ currency|get_other_amount:user.tasks_income.amount }},
+                {{ currency|get_other_amount:user.spinwin_income.amount }},
+                {{ currency|get_other_amount:user.awards_income.amount }},
+            ],
+            labels: ['Referrals', 'Tasks', 'SpinWin', 'Awards'],
+            legend: {
+                position: 'bottom'
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '65%',
+                        labels: {
+                            show: true,
+                            name: {
+                                show: true,
+                                fontSize: '14px',
+                                fontFamily: 'Nunito, sans-serif',
+                                fontWeight: 700,
+                                color: '#02024f',
+                                offsetY: 0,
+                                formatter: function (val) {
+                                    return val
+                                }
+                            },
+                            value: {
+                                show: true,
+                                fontSize: '12px',
+                                fontFamily: 'Nunito, sans-serif',
+                                fontWeight: 700,
+                                color: '#373d3f',
+                                offsetY: 4,
+                                formatter: function (val) {
+                                    return val + ' {{ currency }}'
+                                }
+                            },
+                            total: {
+                                show: true,
+                                showAlways: false,
+                                label: 'Referrals',
+                                fontSize: '16px',
+                                fontFamily: 'Quicksand, sans-serif',
+                                fontWeight: 700,
+                                color: '#02024f',
+                                formatter: function (w) {
+                                    return '{{ currency|get_other_amount:user.referral_income.amount }} {{ currency }}'
+                                }
+                            },
+                        }
+                    }
+                },
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return value + ' {{ currency }}';
+                    }
+                }
+            }
+        };
+        let incomeSummaryPieChart = new ApexCharts(
+            document.getElementById('income-summary-pie-chart'), incomeSummaryPieChartOptions
+        );
+        incomeSummaryPieChart.render();
+    </script>
+{% endblock %}

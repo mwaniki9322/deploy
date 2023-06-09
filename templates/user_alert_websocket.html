@@ -1,0 +1,58 @@
+{% if user.is_authenticated %}
+    <script>
+        // User alert websocket
+        let USER_ALERT_SOCKET_URL;
+        if (location.protocol === 'https:') {
+            USER_ALERT_SOCKET_URL = `wss://${window.location.host}/ws/users/{{ user.id_2 }}/alert/`
+        } else {
+            USER_ALERT_SOCKET_URL = `ws://${window.location.host}/ws/users/{{ user.id_2 }}/alert/`
+        }
+        const USER_ALERT_SOCKET = new WebSocket(
+            USER_ALERT_SOCKET_URL
+        );
+
+        // Account activated alert
+        function accountActivatedAlert(alert) {
+            if (location.pathname === '{% url 'activate_account' %}') {
+                location.href = '{% url 'user_dashboard' %}';
+            } else if (location.pathname === '{% url 'user_dashboard' %}') {
+                location.reload();
+            } else {
+                toastr.info('Your account has been activated.', 'Info!');
+            }
+        }
+
+        // Tasks subscribed alert
+        function tasksSubscribedAlert(alert) {
+            if (location.pathname === '{% url 'tasks_subscribe' %}') {
+                location.href = '{% url 'user_tasks' %}';
+            } else {
+                toastr.info('You have subscribed to tasks.', 'Info!');
+            }
+        }
+
+        // SpinWin balance alert
+        function spinWinBalAlert(alert) {
+            if (location.pathname === '{% url 'spinwin' %}') {
+                $('.spinwin-bal').text('Ksh. ' + alert['spinwin_bal']);
+            } else {
+                toastr.info('Your new SpinWin balance is Ksh. ' + alert['spinwin_bal'], 'Info!');
+            }
+        }
+
+        // User alert commands
+        let userAlertCommands = {
+            'account_activated': accountActivatedAlert,
+            'spinwin_bal': spinWinBalAlert,
+            'tasks_subscribed': tasksSubscribedAlert,
+        }
+
+        USER_ALERT_SOCKET.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            let alert = data['alert'];
+            if (userAlertCommands.hasOwnProperty(alert['message'])) {
+                userAlertCommands[alert['message']](alert);
+            }
+        }
+    </script>
+{% endif %}

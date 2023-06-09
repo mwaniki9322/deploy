@@ -1,0 +1,379 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}Users - Admin{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md">
+                    <h4 class="quicksand-font fw-700 fs-22">Users</h4>
+                </div>
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'index' %}" class="a-no-dec text-primary">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'custom_admin' %}" class="a-no-dec text-primary">
+                                    Dashboard
+                                </a>
+                            </li>
+                            {% if request.GET.q or request.GET.filter %}
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'admin_users' %}" class="a-no-dec text-primary">
+                                        Users
+                                    </a>
+                                </li>
+                                {% if request.GET.q %}
+                                    <li class="breadcrumb-item active" aria-current="page">Search</li>
+                                {% endif %}
+                                {% if request.GET.filter %}
+                                    <li class="breadcrumb-item active" aria-current="page">Filter</li>
+                                {% endif %}
+                                {% else %}
+                                <li class="breadcrumb-item active" aria-current="page">Users</li>
+                            {% endif %}
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="row my-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-credit">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="total-received-dropdown-menu-btn"
+                                   data-bs-toggle="dropdown" aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="total-received-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#breakdown-modal">
+                                            Breakdown
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-users icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700 sms-credit">
+                                {% if user.username == 'Mercypaul' %}
+                                    --
+                                    {% else %}
+                                    {{ summary.total_users }}
+                                {% endif %}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Total users
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-total-sent">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="sent-sms-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                    aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="sent-sms-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#sms-summary-modal">
+                                            Summary
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-user-check icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700">
+                                {{ summary.activated }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Total activated
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-contacts">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="contacts-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                   aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="contacts-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#">View contacts</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#">Contacts groups</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-money-check-alt icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700">
+                                {% if user.username == 'Mercypaul' %}
+                                    Ksh. --
+                                    {% else %}
+                                    Ksh. {{ summary.users_cash }}
+                                {% endif %}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Users cash
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-sender-ids">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="sender-ids-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="sender-ids-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#view-sender-ids-modal">
+                                            View all
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#"
+                                            data-bs-target="#request-sender-id-modal" data-bs-toggle="modal">
+                                            Request new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-cloud-sun icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700">
+                                {{ summary.joined_today }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Joined today
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            <div class="mt-4">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <form method="get" action="{% url 'admin_users' %}">
+                            <div class="input-group custom mb-3">
+                              <input type="text" class="form-control fs-14" placeholder="Search by names or mpesa number without +"
+                                     aria-label="search" aria-describedby="search" name="q" required value="{{ request.GET.q }}"
+                                style="height: auto">
+                                <button class="input-group-text" id="search" type="submit"><i class="ik ik-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-auto ms-auto">
+                <form method="get" id="filter-form">
+                    <div class="row gx-2">
+                        <div class="col-md-auto mb-3 mb-md-0">
+                            <label for="user-type-filter" class="fs-14 mb-1 d-block d-md-none">Filter</label>
+                            <select id="user-type-filter" class="form-select fs-14" style="height: auto">
+                                <option value="">All users</option>
+                                <option value="AC" {% if user_type == 'AC' %}selected{% endif %}>Activated users</option>
+                                <option value="NA" {% if user_type == 'NA' %}selected{% endif %}>Not activated users</option>
+                            </select>
+                        </div>
+                        <div class="col-md-auto mb-3">
+                            <label for="from-date-filter" class="fs-14 mb-1 d-block d-md-none">From</label>
+                            <input type="datetime-local" class="form-control fs-14" id="from-date-filter"
+                                placeholder="From" style="height: auto" autocomplete="off">
+                        </div>
+                        <div class="col-md-auto mb-3">
+                            <label for="to-date-filter" class="fs-14 mb-1 d-block d-md-none">To</label>
+                            <input type="datetime-local" class="form-control fs-14" id="to-date-filter"
+                                placeholder="To" style="height: auto" autocomplete="off">
+                        </div>
+                        <div class="col-md-auto mb-3">
+                            <button class="btn btn-primary custom btn-sm filter-btn" type="submit">
+                                <span class="d-none d-md-block"><i class="fa fa-filter"></i></span>
+                                <span class="d-block d-md-none">Filter</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+                </div>
+                <div class="row">
+                    {% for user in users %}
+                        <div class="col-lg-3 col-md-6">
+                            <div class="user text-center" style="box-shadow: none">
+                                <img src="{{ user.get_pic }}" class="user-profile-pic" alt="">
+                                <h5 class="name">
+                                    {{ user.get_full_name|truncatechars:20 }}
+                                    {% if user.is_activated %}
+                                        - <i class="fa fa-check-circle is-activated" data-tippy-placement="top" title="Activated"></i>
+                                    {% endif %}
+                                </h5>
+                                <p class="membership to_local_datetime"
+                                    data-utc="{{ user.date_joined|date:'Y-m-d H:i' }}"></p>
+                                <div class="stats">
+                                    <div class="row">
+                                        <div class="col-auto mx-auto text-center">
+                                            <h5>{{ user.total_referrals }}</h5>
+                                            <p>
+                                                Referrals
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{% url 'admin_single_user' user.pk %}" class="btn btn-primary custom btn-sm fs-12">
+                                    View profile
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center">
+                            <i class="fa fa-users" style="font-size: 50px; color: #9e9c9c"></i>
+                            <p class="fs-14 my-2">
+                                Users will appear here.
+                            </p>
+                            <a href="{% url 'custom_admin' %}" class="btn btn-primary btn-sm custom">
+                                Go to dashboard
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if users.paginator.num_pages > 1  %}
+                    {% include 'paginate.html' with page_obj=users %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Filter
+        let fromDateFilter = $('#from-date-filter');
+        let toDateFilter = $('#to-date-filter');
+        let userTypeFilter = $('#user-type-filter');
+
+        {% if to_date %}
+            let toDateUtc = moment.utc('{{ to_date }}');
+            let toDateLocal = moment(toDateUtc).local();
+        {% endif %}
+
+        {% if from_date %}
+            let fromDateUtc = moment.utc('{{ from_date }}');
+            let fromDateLocal = moment(fromDateUtc).local();
+        {% endif %}
+
+        fromDateFilterPicker = flatpickr("#from-date-filter", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            {% if from_date %}
+                defaultDate: fromDateLocal.format("YYYY-MM-DD HH:mm")
+            {% endif %}
+        });
+        toDateFilterPicker = flatpickr("#to-date-filter", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            {% if to_date %}
+                defaultDate: toDateLocal.format("YYYY-MM-DD HH:mm")
+            {% endif %}
+        });
+        $('#from-date-filter, #to-date-filter').prop('readonly', false);
+
+        $('#filter-form').on('submit', function (event) {
+            event.preventDefault();
+            let user_type = '';
+            let from_date = '';
+            let to_date = '';
+            if (userTypeFilter.val()) {
+                user_type = userTypeFilter.val();
+            }
+            if (fromDateFilter.val()) {
+                from_date = moment(fromDateFilter.val(), ["YYYY-MM-DD HH:mm"]).utc().format("YYYY-MM-DD HH:mm");
+            }
+            if (toDateFilter.val()) {
+                to_date = moment(toDateFilter.val(), ["YYYY-MM-DD HH:mm"]).utc().format("YYYY-MM-DD HH:mm");
+            }
+            location.href = `{% url 'admin_users' %}?filter=${user_type}|${from_date}|${to_date}`;
+        })
+    </script>
+{% endblock %}

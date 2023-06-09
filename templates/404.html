@@ -1,0 +1,35 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}
+    {% site_name as site_name %}
+    Page not found | {{ site_name }}
+{% endblock %}
+{% block css %}
+    <style type="text/css">
+        #auth-second-block {
+            display: none;
+        }
+        #auth-first-block {
+            margin-left: auto; margin-right: auto;
+            box-shadow: 0 4px 12px rgba(120, 84, 247, 0.2);
+        }
+        .auth-card-shadow{
+            box-shadow: none;
+        }
+    </style>
+{% endblock %}
+{% block first-block %}
+    <div class="text-center">
+        <h4 class="fw-700" style="color: #4F515B;">Page not found</h4>
+        <div class="text-center">
+            <img class="img-fluid" src="{% static 'images/404.svg' %}" alt="Page not found">
+            <p class="text-center my-3 fs-14">
+                The page you are looking for was not found.
+            </p>
+            <a href="{% url 'index' %}" class="btn btn-primary custom">
+                Take me home
+            </a>
+        </div>
+    </div>
+{% endblock %}

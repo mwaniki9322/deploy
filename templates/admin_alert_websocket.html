@@ -1,0 +1,49 @@
+{% if user.is_authenticated and user.is_superuser %}
+    <script>
+        // Admin alert websocket
+        let ADMIN_ALERT_SOCKET_URL;
+        if (location.protocol === 'https:') {
+            ADMIN_ALERT_SOCKET_URL = `wss://${window.location.host}/ws/admin-alert/`
+        } else {
+            ADMIN_ALERT_SOCKET_URL = `ws://${window.location.host}/ws/admin-alert/`
+        }
+        const ADMIN_ALERT_SOCKET = new WebSocket(
+            ADMIN_ALERT_SOCKET_URL
+        );
+
+        function withdrawalAlert(alert) {
+            let status = alert['status'];
+            let id = alert['id'];
+
+            // Update withdrawal page
+            if (location.pathname === '{% url 'admin_withdrawals' %}') {
+                if (status === 'cancelled') {
+                    $('#status-' + id).html('<span class="text-danger">Cancelled</span>');
+                } else if (status === 'disbursed') {
+                    $('#status-' + id).html('<span style="color: #0ACE8F">Disbursed</span>');
+                }
+
+                if (status === 'cancelled' || status === 'disbursed') {
+                    $('#manage-dropmenu-' + id).html('<li><a class="dropdown-item fs-14" href="#">No action</a></li>');
+                }
+            }
+
+            // Show alert
+            toastr.clear();
+            toastr.info(alert['msg'], 'Info!', {timeOut: 5000});
+        }
+
+        // Admin alert commands
+        let adminAlertCommands = {
+            'withdrawal_alert': withdrawalAlert
+        }
+
+        ADMIN_ALERT_SOCKET.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            let alert = data['alert'];
+            if (adminAlertCommands.hasOwnProperty(alert['message'])) {
+                adminAlertCommands[alert['message']](alert);
+            }
+        }
+    </script>
+{% endif %}

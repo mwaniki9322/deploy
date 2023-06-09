@@ -1,0 +1,353 @@
+{% extends 'base2.html' %}
+{% block title %}Flutterwave Payments - Admin{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+        <div class="col-md">
+            <h4 class="fs-24 fw-700 quicksand-font">Flutterwave Payments</h4>
+        </div>
+        <div class="col-md-auto">
+            <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                <ol class="breadcrumb fs-12 custom p-0 mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'custom_admin' %}" class="a-no-dec link1">
+                            Dashboard
+                        </a>
+                    </li>
+                    {% if request.GET.q or request.GET.filter %}
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'admin_fw_payments' %}" class="a-no-dec text-primary">
+                                Flutterwave Payments
+                            </a>
+                        </li>
+                        {% if request.GET.q %}
+                            <li class="breadcrumb-item active" aria-current="page">Search</li>
+                        {% endif %}
+                        {% if request.GET.filter %}
+                            <li class="breadcrumb-item active" aria-current="page">Filter</li>
+                        {% endif %}
+                        {% else %}
+                        <li class="breadcrumb-item active" aria-current="page">Flutterwave Payments</li>
+                    {% endif %}
+                </ol>
+            </nav>
+        </div>
+    </div>
+            <div class="row my-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-credit">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="total-received-dropdown-menu-btn"
+                                            data-bs-toggle="dropdown" aria-expanded="false" style="visibility: hidden">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="total-received-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#breakdown-modal">
+                                                    Breakdown
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-credit-card icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 quicksand-font">
+                                        {{ summary.payments_count }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Payments count
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-total-sent">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="sent-sms-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                            aria-expanded="false" style="visibility: hidden">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="sent-sms-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#sms-summary-modal">
+                                                    Summary
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-money-check-alt icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 quicksand-font">
+                                        Ksh. {{ summary.total_payments }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Total Payments
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-contacts">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="contacts-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                           aria-expanded="false" style="visibility: hidden">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="contacts-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#">View contacts</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#">Contacts groups</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-calendar-week icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 quicksand-font">
+                                        Ksh. {{ summary.this_month_payments }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Payments in {% now 'M' %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card custom2 bulk-sms-sender-ids">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dropdown">
+                                        <a href="#" class="float-end more" id="sender-ids-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false"
+                                            style="visibility: hidden">
+                                            <i class="ik ik-menu"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="sender-ids-dropdown-menu-btn">
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#view-sender-ids-modal">
+                                                    View all
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item fs-14" href="#"
+                                                    data-bs-target="#request-sender-id-modal" data-bs-toggle="modal">
+                                                    Request new
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <div class="icon-center-wrap">
+                                        <i class="fa fa-cloud-sun icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-700 quicksand-font">
+                                        Ksh. {{ summary.payments_today }}
+                                    </h5>
+                                    <p class="my-0 fs-14">
+                                        Payments today
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-4">
+        <div class="row">
+            <div class="col-lg-4">
+                <form method="get" action="{% url 'admin_fw_payments' %}">
+                    <div class="input-group custom mb-3">
+                      <input type="text" class="form-control fs-14" placeholder="Search by trans id and email"
+                             aria-label="search" aria-describedby="search" name="q" required value="{{ request.GET.q }}"
+                        style="height: auto">
+                        <button class="input-group-text" id="search" type="submit"><i class="ik ik-search"></i></button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-auto ms-auto">
+                <form method="get" id="filter-form">
+                    <div class="row gx-2">
+                        <div class="col-md-auto mb-3">
+                            <label for="from-date-filter" class="fs-14 mb-1 d-block d-md-none">From</label>
+                            <input type="datetime-local" class="form-control fs-14" id="from-date-filter"
+                                placeholder="From" style="height: auto" autocomplete="off">
+                        </div>
+                        <div class="col-md-auto mb-3">
+                            <label for="to-date-filter" class="fs-14 mb-1 d-block d-md-none">To</label>
+                            <input type="datetime-local" class="form-control fs-14" id="to-date-filter"
+                                placeholder="To" style="height: auto" autocomplete="off">
+                        </div>
+                        <div class="col-md-auto mb-3">
+                            <button class="btn btn-primary custom btn-sm filter-btn" type="submit">
+                                <span class="d-none d-md-block"><i class="fa fa-filter"></i></span>
+                                <span class="d-block d-md-none">Filter</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <table class="basic-table">
+            <tr class="fs-14 bg-1">
+                <th>Trans ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Payment type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Datetime</th>
+            </tr>
+            {% for payment in payments %}
+                <tr class="fs-12">
+                    <td data-label="Trans ID">
+                        {% if payment.is_processed %}
+                            <i class="fa fa-check-circle" style="color: #0ACE8F"></i>
+                            {% else %}
+                            <i class="fa fa-times-circle text-danger"></i>
+                        {% endif %}
+                        -
+                        {{ payment.get_trans_id }}
+                    </td>
+                    <td data-label="Name" title="{{ payment.get_full_name }}">
+                        {{ payment.get_full_name|truncatechars:15 }}
+                    </td>
+                    <td data-label="Email" title="{{ payment.get_email }}">
+                        {{ payment.get_email|truncatechars:15 }}
+                    </td>
+                    <td data-label="Payment type" title="{{ payment.get_payment_type }}">
+                        {{ payment.get_payment_type|truncatechars:15 }}
+                    </td>
+                    <td data-label="Amount">
+                        {{ payment.get_currency }} {{ payment.get_amount }}
+                    </td>
+                    <td data-label="Status">
+                        {{ payment.get_status }}
+                    </td>
+                    <td data-label="Datetime" class="to_local_datetime" data-utc="{{ payment.created_at|date:'Y-m-d H:i' }}">
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% if payments.paginator.num_pages > 1 %}
+            {% include 'paginate.html' with page_obj=payments %}
+        {% endif %}
+    </div>
+        </div>
+    </section>
+{% endblock %}
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Filter
+        let fromDateFilter = $('#from-date-filter');
+        let toDateFilter = $('#to-date-filter');
+
+        {% if to_date %}
+            let toDateUtc = moment.utc('{{ to_date }}');
+            let toDateLocal = moment(toDateUtc).local();
+        {% endif %}
+
+        {% if from_date %}
+            let fromDateUtc = moment.utc('{{ from_date }}');
+            let fromDateLocal = moment(fromDateUtc).local();
+        {% endif %}
+
+        fromDateFilterPicker = flatpickr("#from-date-filter", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            {% if from_date %}
+                defaultDate: fromDateLocal.format("YYYY-MM-DD HH:mm")
+            {% endif %}
+        });
+        toDateFilterPicker = flatpickr("#to-date-filter", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            {% if to_date %}
+                defaultDate: toDateLocal.format("YYYY-MM-DD HH:mm")
+            {% endif %}
+        });
+        $('#from-date-filter, #to-date-filter').prop('readonly', false);
+
+        $('#filter-form').on('submit', function (event) {
+            event.preventDefault();
+            let from_date = '';
+            let to_date = '';
+            if (fromDateFilter.val()) {
+                from_date = moment(fromDateFilter.val(), ["YYYY-MM-DD HH:mm"]).utc().format("YYYY-MM-DD HH:mm");
+            }
+            if (toDateFilter.val()) {
+                to_date = moment(toDateFilter.val(), ["YYYY-MM-DD HH:mm"]).utc().format("YYYY-MM-DD HH:mm");
+            }
+            location.href = `{% url 'admin_fw_payments' %}?filter=${from_date}|${to_date}`;
+        })
+    </script>
+{% endblock %}

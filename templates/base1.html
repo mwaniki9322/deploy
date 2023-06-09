@@ -1,0 +1,233 @@
+{% load static %}
+{% load utils_tags %}
+{% site_name as site_name %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+
+        <meta name="description" content="Creating simplest ways for you to make money online">
+        <meta name="keywords" content="Money, Kenya, Online">
+        <meta name="author" content="JSoftMedia">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#16df7e">
+
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon.png' %}">
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.png' %}">
+        <meta name="msapplication-TileImage" content="{% static 'images/favicon.png' %}">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,500,500i,600,600i,700,700i|Quicksand:300,300i,400,400i,500,500i,600,600i,700,700i"
+            rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="{% static 'vendor/iconkit/css/iconkit.min.css' %}">
+        <link href="{% static 'vendor/icofont/icofont.min.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+        <link href="{% static 'css/main.css' %}?v=0.04" rel="stylesheet">
+        <title>{% block title %}{% endblock %} | {{ site_name }}</title>
+    {% block css %}
+    {% endblock %}
+    </head>
+    <body>
+
+        <div id="header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <a href="{% url 'index' %}" class="a-no-dec">
+                            <h1 class="brand">{{ site_name }}</h1>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a class="mobile-menu-toggle float-end" href="#">
+                          <i class="ik ik-menu"></i>
+                      </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu-overlay" class="mobile-menu-toggle"></div>
+
+        <div id="mobile-menu">
+            <div class="d-flex justify-content-between header align-items-center">
+                <h5 class="title">{{ site_name }}</h5>
+                <a href="#" id="mobile-menu-close-link" class="mobile-menu-toggle">
+                    <i class="ik ik-x"></i>
+                </a>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link link-outer" href="{% url 'index' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-outer" href="{% url 'user_tasks' %}">Daily Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-outer" href="{% url 'spinwin' %}">SpinWin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-outer" href="{% url 'user_dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-outer" href="{% url 'signup' %}">Register</a>
+                </li>
+                {% if user.is_authenticated and user.is_superuser %}
+                    <li class="nav-item">
+                    <a class="nav-link link-outer" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAdminMobileMenu"
+                        aria-expanded="false" aria-controls="collapseAdminMobileMenu">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <span>Admin</span>
+                            </div>
+                            <div class="col-auto">
+                                <i class="ik ik-plus"></i>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="accordion" id="collapseAdminMobileMenuAccordion">
+                        <div class="accordion-item">
+                            <div id="collapseAdminMobileMenu" class="accordion-collapse collapse" data-bs-parent="#collapseAdminMobileMenuAccordion">
+                                <div class="accordion-body" style="padding-top: 0; padding-bottom: 0">
+                                    <ul class="nav flex-column" style="border-left: 2px solid #e1e8ea">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'custom_admin' %}">Dashboard</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'admin_users' %}">Users</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'admin_mpesa_received' %}">Mpesa received</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'admin_mpesa_sent' %}">Mpesa sent</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'admin_fw_payments' %}">Flutterwave payments</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'admin_withdrawals' %}">Withdrawals</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'admin_tasks' %}">Tasks</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endif %}
+        </ul>
+       <hr>
+        <div class="d-grid text-center">
+            {% if user.is_authenticated %}
+                <a href="{% url 'user_dashboard' %}" class="button">
+                    Dashboard
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="button">
+                    Login
+                </a>
+            {% endif %}
+        </div>
+        </div>
+
+        <div class="w-100 bg-light-gradient center-screen">
+            <div class="container-fluid">
+                <div class="col-lg-7 mx-auto" id="auth-container-inner">
+                    <div class="row auth-card-shadow">
+                        <div class="col-md-6 order-md-2 bg-white p-30" id="auth-first-block">
+                            <div class="center-xy">
+                                <div class="w-100">
+                                    {% block first-block %}
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 order-md-1 text-white p-30" style="" id="auth-second-block">
+                            <div class="center-xy">
+                                <div class="w-100">
+                                    {% block second-block %}
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-7 mx-auto" >
+                            <div class="row text-center mt-30">
+                                <div class="col-3 mb-2">
+                                    <a href="{% url 'user_tasks' %}" class="fs-14 fw-500 a-no-dec link1">Tasks</a>
+                                </div>
+                                <div class="col-3 mb-2">
+                                    <a href="{% url 'spinwin' %}" class="fs-14 fw-500a a-no-dec link1">SpinWin</a>
+                                </div>
+                                <div class="col-3 mb-2">
+                                    <a href="{% url 'user_dashboard' %}" class="fs-14 fw-500 a-no-dec link1">Dashboard</a>
+                                </div>
+                                <div class="col-3 mb-2">
+                                    <a href="{% url 'signup' %}" class="fs-14 fw-500 a-no-dec link1">Register</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-20">
+                        <span class="auth-credits">
+                            &copy; {% now 'Y' %} {{ site_name}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% block modals %}
+        {% endblock %}
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/e59b1154dc.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="{% static 'vendor/tippy.all.min.js' %}"></script>
+        <script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="8b8d70c1-7af7-4728-9954-8e4edb14b68d";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+        <script src="{% static 'js/main.js' %}?v=0.04"></script>
+        {% include 'messages.html' %}
+        {% include 'user_alert_websocket.html' %}
+        {% include 'change-utc-offset.html' %}
+        <script>
+            let header = document.getElementById('header');
+            let mobileMenu = document.getElementById('mobile-menu');
+            $(window).on('scroll resize load', function () {
+                let windowScrollTop = $(this).scrollTop();
+                let headerOffset = $(header).height();
+                if(windowScrollTop >= headerOffset){
+                    $(header).addClass('scrolled')
+                } else {
+                    $(header).removeClass('scrolled')
+                }
+            })
+            $('.mobile-menu-toggle').on('click', function (event) {
+                event.preventDefault();
+                let mobileMenuOverlay = $('#mobile-menu-overlay');
+                if ($(mobileMenu).hasClass('shown')) {
+                    $(mobileMenu).removeClass('shown');
+                    mobileMenuOverlay.css('display', 'none');
+                    $('body').removeClass('no-scroll');
+                } else {
+                    $(mobileMenu).addClass('shown');
+                    mobileMenuOverlay.css('display', 'block');
+                    $('body').addClass('no-scroll');
+                }
+            })
+        </script>
+        {% block js %}
+        {% endblock %}
+    </body>
+</html>

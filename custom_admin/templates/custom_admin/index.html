@@ -1,0 +1,357 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load utils_tags %}
+{% block title %}Admin{% endblock %}
+{% block css %}
+    <style>
+        body{
+            background: #F5F6FB;
+        }
+        .footer-top{
+            display: none;
+        }
+        #footer{
+            background: #fff;
+        }
+        #footer .footer-bottom {
+            border-top: none;
+            z-index: 2;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}
+{% block main-content %}
+    <section style="padding-top: 6rem; padding-bottom: 2rem">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md">
+                    <h4 class="quicksand-font fw-700 fs-22">Admin dashboard</h4>
+                </div>
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="fs-14 mt-2 mt-md-0">
+                        <ol class="breadcrumb p-0 mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'index' %}" class="a-no-dec text-primary">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Admin dashboard</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="row my-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-credit">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="total-received-dropdown-menu-btn"
+                                   data-bs-toggle="dropdown" aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="total-received-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#breakdown-modal">
+                                            Breakdown
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-users icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700 sms-credit">
+                                {{ total_users }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Total users
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-total-sent">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="sent-sms-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                    aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="sent-sms-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#sms-summary-modal">
+                                            Summary
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-user-shield icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700">
+                                {{ staff_users }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Staff users
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-contacts">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="contacts-dropdown-menu-btn" data-bs-toggle="dropdown"
+                                   aria-expanded="false" style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="contacts-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#">View contacts</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#">Contacts groups</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-dollar-sign icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700 online-users">
+                                Ksh. {{ ready_to_withdraw }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Ready to withdraw
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card custom2 bulk-sms-sender-ids">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="dropdown">
+                                <a href="#" class="float-end more" id="sender-ids-dropdown-menu-btn" data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="visibility: hidden">
+                                    <i class="ik ik-menu"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="sender-ids-dropdown-menu-btn">
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#view-sender-ids-modal">
+                                            View all
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item fs-14" href="#"
+                                            data-bs-target="#request-sender-id-modal" data-bs-toggle="modal">
+                                            Request new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="icon-center-wrap">
+                                <i class="fa fa-cloud-sun icon"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-700">
+                                {{ joined_today }}
+                            </h5>
+                            <p class="my-0 fs-14">
+                                Joined today
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            <div class="row my-4">
+                <div class="col-lg-6 mx-auto">
+                    <div class="card custom1">
+                        <div class="card-header pb-0" style="border-bottom: none">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5>Earnings Trend</h5>
+                                <a href="#" class="fs-14 a-no-dec text-primary fw-600"
+                                    style="font-family: 'Quicksand', sans-serif" id="income-trend-dates">
+                                    --
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div style="max-width: 100%; min-width: 100%">
+                                <div id="income-trend-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-4">
+                <h4 class="fw-700 fs-16 mb-3">Users</h4>
+                <div class="row">
+                    {% for user in users %}
+                        <div class="col-lg-3 col-md-6">
+                        <div class="user text-center" style="box-shadow: none">
+                            <img src="{{ user.get_pic }}" class="user-profile-pic" alt="">
+                            <h5 class="name">
+                                {{ user.get_full_name|truncatechars:20 }}
+                                {% if user.is_activated %}
+                                    - <i class="fa fa-check-circle is-activated" data-tippy-placement="top" title="Activated"></i>
+                                {% endif %}
+                            </h5>
+                            <p class="membership to_local_datetime"
+                                data-utc="{{ user.date_joined|date:'Y-m-d H:i' }}"></p>
+                            <div class="stats">
+                                <div class="row">
+                                    <div class="col-auto mx-auto">
+                                        <h5>{{ user.total_referrals }}</h5>
+                                        <p>
+                                            Referrals
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{% url 'admin_single_user' user.pk %}" class="btn btn-primary custom btn-sm fs-12">
+                                View profile
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center">
+                    <a href="{% url 'admin_users' %}" class="btn btn-primary btn-sm custom">
+                        All users
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block js %}
+    <script>
+        let incomeTrendChartData = [];
+        let incomeTrendChartOptions = {
+            chart: {
+                type: 'line',
+                height: 253,
+                toolbar: {
+                    show: false
+                },
+                animations: {
+                    enabled: true,
+                    easing: 'linear',
+                    dynamicAnimation: {
+                        speed: 2000
+                    }
+                },
+            },
+            series: [{
+                name: 'Income',
+                data: incomeTrendChartData
+            }],
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                curve: 'smooth',
+                lineCap: 'butt',
+                colors: ['#5846f9'],
+                width: 2,
+                dashArray: 0,
+            },
+            tooltip: {
+                marker: {
+                  show: true,
+                    fillColors: ['#5846f9']
+                },
+                y: {
+                    formatter: function(value, {series, seriesIndex, dataPointIndex, w}) {
+                        return 'Ksh. ' + value;
+                    }
+                }
+            },
+            markers: {
+                colors: ['#5846f9'],
+                strokeColors: '#fff',
+                strokeWidth: 2,
+                strokeOpacity: 0.9,
+                strokeDashArray: 0,
+                fillOpacity: 1,
+                shape: "circle",
+                showNullDataPoints: true,
+            },
+            xaxis: {
+                type: 'category',
+            },
+            yaxis: {
+                labels: {
+                    show: true
+                },
+                title: {
+                    text: "Earnings"
+                },
+            },
+            grid: {
+                borderColor: '#d8d8d8',
+                strokeDashArray: 5,
+            },
+            legend: {
+              show: false
+            },
+        }
+        let incomeTrendChart = new ApexCharts(
+            document.querySelector("#income-trend-chart"), incomeTrendChartOptions
+        );
+        incomeTrendChart.render();
+
+        $(document).ready(function () {
+            let data = {{ income_trend_chart_data }};
+            incomeTrendChart.updateSeries([{
+                data: data
+            }])
+            $('#income-trend-dates').text(data[0]['x'] + ' - ' + data[6]['x']);
+        })
+    </script>
+{% endblock %}

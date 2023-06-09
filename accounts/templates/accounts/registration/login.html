@@ -1,0 +1,64 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block css %}
+    <style type="text/css">
+        #auth-second-block {
+            display: none;
+        }
+        #auth-first-block {
+            margin-left: auto; margin-right: auto;
+            box-shadow: 0 4px 12px rgba(120, 84, 247, 0.2);
+        }
+        .auth-card-shadow{
+            box-shadow: none;
+        }
+    </style>
+{% endblock %}
+{% block first-block %}
+    <div class="text-center">
+        <h4 class="fw-700" style="color: #4F515B;">Login</h4>
+        <p class="fs-14 fw-500">We are glad to see you back</p>
+    </div>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        {% if form.errors %}
+            <p class="text-danger text-center my-2 fs-14">
+                Unable to login with provided credentials.
+                Note that both fields are case sensitive.
+            </p>
+        {% endif %}
+        {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% endif %}
+        <div class="mb-3">
+            <label for="username" class="fs-14 fw-500 mb-10">
+                Username
+            </label>
+          <input type="text" class="form-control fs-14" id="username" required name="username"
+                 value="{% if form.username.value %}{{ form.username.value }}{% endif %}">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="fs-14 fw-500 mb-10">
+                Password
+            </label>
+          <input type="password" class="form-control fs-14" id="password" required name="password"
+                value="{% if form.password.value %}{{ form.password.value }}{% endif %}">
+        </div>
+        <p class="mb-3">
+            <a href="{% url 'password_reset' %}" class="fs-14 a-no-dec link1">
+                Forgot password?
+            </a>
+        </p>
+        <div class="d-grid mb-3">
+            <button class="button" type="submit">
+                Log Into Your Account
+            </button>
+        </div>
+    </form>
+    <div class="text-center">
+        <a href="{% url 'signup' %}" class="a-no-dec link1 fs-16">
+            Create new account
+        </a>
+    </div>
+{% endblock %}

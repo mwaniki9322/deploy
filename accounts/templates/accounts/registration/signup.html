@@ -1,0 +1,209 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block title %}Sign Up{% endblock %}
+{% block css %}
+    <style type="text/css">
+        #auth-second-block {
+            display: none;
+        }
+        #auth-first-block {
+            margin-left: auto; margin-right: auto;
+            box-shadow: 0 4px 12px rgba(120, 84, 247, 0.2);
+        }
+        .auth-card-shadow{
+            box-shadow: none;
+        }
+    </style>
+{% endblock %}
+{% block first-block %}
+    <div class="text-center">
+        <h4 class="fw-700" style="color: #4F515B;">Sign Up</h4>
+        <p class="fs-14 fw-500">
+            We are glad to see you here
+        </p>
+    </div>
+    <form action="{% url 'signup' %}" method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+            <ul class="fs-14 text-danger">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error|escape }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="mb-3">
+            <label for="username" class="fs-14 fw-500 mb-1">
+                Username
+            </label>
+          <input type="text" class="form-control fs-14" id="username" required name="username" maxlength="150"
+            value="{% if form.username.value %}{{ form.username.value }}{% endif %}">
+            {% if form.username.errors %}
+                <ul class="fs-14 text-danger mt-2">
+                    {% for error in form.username.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="fs-14 fw-500 mb-1">
+                Email
+            </label>
+          <input type="email" class="form-control fs-14" id="email" required name="email" maxlength="254"
+            value="{% if form.email.value %}{{ form.email.value }}{% endif %}">
+            {% if form.email.errors %}
+                <ul class="fs-14 text-danger mt-2">
+                    {% for error in form.email.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="country" class="fs-14 fw-500 mb-1">
+                Country
+            </label>
+            <select id="country" class="form-select fs-14" required name="country">
+                <option value="">--Select country--</option>
+                {% for country in countries %}
+                    <option value="{{ country.alpha_2 }}" {% if form.country.value == country.alpha_2 or country.alpha_2 == 'KE' %}selected{% endif %}>{{ country.name }}</option>
+                {% endfor %}
+            </select>
+            {% if form.country.errors %}
+                <ul class="fs-14 text-danger mt-2">
+                    {% for error in form.country.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="phone_number" class="fs-14 fw-500 mb-1">
+                Phone number
+            </label>
+            <input type="tel" class="form-control fs-14" id="phone_number" required name="phone_number" maxlength="50"
+                value="{% if form.phone_number.value %}{{ form.phone_number.value }}{% endif %}">
+            {% if form.phone_number.errors %}
+                <ul class="fs-14 text-danger mt-2">
+                    {% for error in form.phone_number.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="mb-3" id="mpesa_input">
+            <label for="mpesa_number" class="fs-14 fw-500 mb-1">
+                Safaricom Mpesa number
+            </label>
+          <input type="tel" class="form-control fs-14" id="mpesa_number" name="mpesa_number" maxlength="50"
+                 value="{% if form.mpesa_number.value %}{{ form.mpesa_number.value }}{% endif %}">
+            {% if form.mpesa_number.errors %}
+                <ul class="fs-14 text-danger mt-2">
+                    {% for error in form.mpesa_number.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <label for="password" class="fs-14 fw-500 mb-1">
+                    Password
+                </label>
+                <a href="#" class="link1 a-no-dec fs-14" id="password-toggler">
+                    Show
+                </a>
+            </div>
+          <input type="password" class="form-control fs-14" id="password" required name="password" maxlength="254"
+            value="{% if form.password.value %}{{ form.password.value }}{% endif %}">
+            {% if form.password.errors %}
+                <ul class="fs-14 text-danger mt-2">
+                    {% for error in form.password.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="referral_code" class="fs-14 fw-500 mb-10">
+                Referral code
+            </label>
+            <input type="text" class="form-control fs-14" id="referral_code" name="referral_code"
+                value="{% if form.referral_code.value %}{{ form.referral_code.value }}{% endif %}"
+                   placeholder="It's optional">
+            {% if form.referral_code.errors %}
+                <ul class="fs-14 text-danger mt-2">
+                    {% for error in form.referral_code.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="d-grid mb-3">
+            <button class="button" type="submit" id="signup-btn">
+                Create Your New Account
+            </button>
+        </div>
+    </form>
+    <div class="text-center">
+        <a href="{% url 'login' %}" class="a-no-dec link1 fs-16">
+            Login if registered
+        </a>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        // Toggle mpesa input on country change
+        let country = $('#country');
+        let mpesaNumber = $('#mpesa_number');
+
+        function toggleMpesaInput() {
+            let mpesaInput = $('#mpesa_input');
+
+            if (country.val() === 'KE') {
+                mpesaInput.css('display', 'block');
+                mpesaNumber.prop('required', true);
+            } else {
+                mpesaInput.css('display', 'none');
+                mpesaNumber.prop('required', false);
+            }
+        }
+
+        country.change(function(){
+            toggleMpesaInput();
+        });
+
+        $(document).ready(function () {
+            toggleMpesaInput();
+        })
+
+        // Toggle password
+        let passwordToggler = $('#password-toggler');
+        let passwordInput = $('#password')
+
+        passwordToggler.on('click', function (event) {
+            event.preventDefault()
+
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text')
+                passwordToggler.text('Hide');
+            } else {
+                passwordInput.attr('type', 'password')
+                passwordToggler.text('Show');
+            }
+        })
+
+        {% if request.GET.rc and form.referral_code.value %}
+            // Readonly for referral_code
+            $("#referral_code").prop('readonly', true);
+        {% endif %}
+    </script>
+{% endblock %}
